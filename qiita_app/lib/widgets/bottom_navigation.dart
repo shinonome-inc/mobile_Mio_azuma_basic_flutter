@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/pages/feed_page.dart';
+import 'package:qiita_app/pages/setting_page.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({Key? key}) : super(key: key);
@@ -20,9 +21,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     Text(
       'Index 2: mypage',
     ),
-    Text(
-      'Index 3: Settings',
-    ),
+    SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
