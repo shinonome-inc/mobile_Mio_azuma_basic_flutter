@@ -14,7 +14,7 @@ dependencies:
   http: ^0.13.3
 
   cupertino_icons: ^1.0.6
-  package_info_plus: ^5.0.1
+  package_info_plus: ^4.2.0
   
 
 dev_dependencies:
