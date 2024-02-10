@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/models/article.dart';
+import 'package:qiita_app/widgets/text_bold_size_m.dart';
+import 'package:qiita_app/widgets/text_regular_size_s%20copy.dart';
 
 class ArticleContainer extends StatelessWidget {
   const ArticleContainer({
@@ -28,40 +30,23 @@ class ArticleContainer extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      article.title,
+                    TextBoldSizeM(
+                      text: article.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.black,
-                      ),
                     ),
                     Row(
                       children: [
-                        Text(
-                          '＠${article.userName}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.secondary,
-                          ),
+                        TextRegularSizeS(
+                          text: '＠${article.userName}',
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          '投稿日:${article.postedDate}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.secondary,
-                          ),
+                        TextRegularSizeS(
+                          text: '投稿日:${article.postedDate}',
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          'いいね：${article.likesCount}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.secondary,
-                          ),
+                        TextRegularSizeS(
+                          text: 'いいね：${article.likesCount}',
                         ),
                       ],
                     ),
