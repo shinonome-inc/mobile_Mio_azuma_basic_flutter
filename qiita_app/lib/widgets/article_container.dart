@@ -71,19 +71,22 @@ class ArticleContainer extends StatelessWidget {
             ],
           ),
         ),
-        const Row(
+        Row(
           children: [
-            SizedBox(
-                width:
-                    16 + 19 * 2 + 8), // CircleAvatarの直径と左のPadding、そして間のスペースを加算
             Expanded(
-              child: Divider(
-                thickness: 0.5,
-                color: AppColors.secondary,
+              child: Container(
+                margin: const EdgeInsets.only(
+                    left: 16 +
+                        19 * 2 +
+                        8), // CircleAvatarの直径と左のPadding、そして間のスペースを加算
+                child: const Divider(
+                  thickness: 0.5,
+                  color: AppColors.secondary,
+                ),
               ),
             ),
           ],
-        ),
+        )
       ],
     );
   }
