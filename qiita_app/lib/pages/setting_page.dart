@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  String version = 'v0.0.0';
+  Future<void> setVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      version = 'v${packageInfo.version}';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setVersion();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +85,13 @@ class SettingsPage extends StatelessWidget {
             height: 1.0,
             indent: 16,
           ),
-          const ListTile(
+          ListTile(
             tileColor: Colors.white,
             title: Row(
               children: [
-                Text('アプリバージョン'),
-                Spacer(),
-                Text('v1.0.0'),
+                const Text('アプリバージョン'),
+                const Spacer(),
+                Text(version),
               ],
             ),
           ),
