@@ -71,7 +71,7 @@ class ArticleContainer extends StatelessWidget {
             ],
           ),
         ),
-        Row(
+        const Row(
           children: [
             SizedBox(
                 width:
