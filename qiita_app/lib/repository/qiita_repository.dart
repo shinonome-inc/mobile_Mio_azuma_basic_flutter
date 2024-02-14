@@ -13,7 +13,6 @@ class QiitaRepository {
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);
       return jsonResponse.map((data) => Article.fromJson(data)).toList();
-      // debugPrint('Response body: ${response.body}');
     } else {
       debugPrint(
           'Failed to fetch Qiita items. Status code: ${response.statusCode}');

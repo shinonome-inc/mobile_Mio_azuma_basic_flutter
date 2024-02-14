@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/widgets/text_bold_size_m.dart';
-import 'package:qiita_app/widgets/text_regular_size_s%20copy.dart';
+import 'package:qiita_app/widgets/text_regular_size_s.dart';
 
 class ArticleContainer extends StatelessWidget {
   const ArticleContainer({

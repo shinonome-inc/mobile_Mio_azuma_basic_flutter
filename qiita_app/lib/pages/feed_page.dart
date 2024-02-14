@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
+import 'package:qiita_app/widgets/app_title.dart';
 import 'package:qiita_app/widgets/article_container.dart';
 
 class FeedPage extends StatefulWidget {
@@ -30,13 +31,17 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Feed'),
+      appBar: const AppTitle(
+        title: 'Feed',
+        showSearchBar: true,
+        showBottomDivider: true,
       ),
       body: ListView.builder(
         itemCount: articles.length,
         itemBuilder: (context, index) {
-          return ArticleContainer(article: articles[index]);
+          return ArticleContainer(
+            article: articles[index],
+          );
         },
       ),
     );
