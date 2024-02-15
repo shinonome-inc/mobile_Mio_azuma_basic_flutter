@@ -23,7 +23,7 @@ class TextBoldSizeM extends StatelessWidget {
       text,
       style: TextStyle(
         fontSize: fontSize,
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w500,
         color: color,
       ),
       maxLines: maxLines,
