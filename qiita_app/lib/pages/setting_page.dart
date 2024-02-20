@@ -66,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
               // 利用規約画面に移動する処理をあとで追加
             },
           ),
-          CustomDivider(),
+          const CustomDivider(),
           ListTile(
             tileColor: Colors.white,
             title: Row(
@@ -77,8 +77,8 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
           ),
-          CustomDivider(),
-          SectionTitle(title: 'その他'),
+          const CustomDivider(),
+          const SectionTitle(title: 'その他'),
           SettingItem(
             title: 'ログアウトする',
             onTap: () {
@@ -86,7 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
             showArrow: false,
           ),
-          CustomDivider(),
+          const CustomDivider(),
         ],
       ),
     );
