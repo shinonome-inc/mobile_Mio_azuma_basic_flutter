@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 
+import '../widgets/setting_item.dart';
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -50,41 +52,21 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 32.0, bottom: 8.0, left: 16.0),
-            child: Text(
-              'アプリ情報',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ),
-          ListTile(
-            tileColor: Colors.white,
-            title: const Text(
-              'プライバシーポリシー',
-            ),
-            trailing: const Icon(Icons.arrow_forward_ios),
+          SectionTitle(title: 'アプリ情報'),
+          SettingItem(
+            title: 'プライバシーポリシー',
             onTap: () {
               // プライバシーポリシー画面に移動する処理をあとで追加
             },
           ),
-          const Divider(
-            color: AppColors.divider,
-            height: 1.0,
-            indent: 16,
-          ),
-          ListTile(
-            tileColor: Colors.white,
-            title: const Text('利用規約'),
-            trailing: const Icon(Icons.arrow_forward_ios),
+          CustomDivider(),
+          SettingItem(
+            title: '利用規約',
             onTap: () {
               // 利用規約画面に移動する処理をあとで追加
             },
           ),
-          const Divider(
-            color: AppColors.divider,
-            height: 1.0,
-            indent: 16,
-          ),
+          CustomDivider(),
           ListTile(
             tileColor: Colors.white,
             title: Row(
@@ -95,30 +77,16 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
           ),
-          const Divider(
-            color: AppColors.divider,
-            height: 1.0,
-            indent: 16,
+          CustomDivider(),
+          SectionTitle(title: 'その他'),
+          SettingItem(
+            title: 'ログアウトする',
+            onTap: () {
+              // ログアウト処理をあとで追加
+            },
+            showArrow: false,
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 32.0, bottom: 8.0, left: 16.0),
-            child: Text(
-              'その他',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          const ListTile(
-            tileColor: Colors.white,
-            title: Text('ログアウトする'),
-          ),
-          const Divider(
-            color: AppColors.divider,
-            height: 1.0,
-            indent: 16,
-          ),
+          CustomDivider(),
         ],
       ),
     );
