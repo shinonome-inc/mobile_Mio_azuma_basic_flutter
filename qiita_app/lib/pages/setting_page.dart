@@ -52,14 +52,14 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(
         children: [
-          SectionTitle(title: 'アプリ情報'),
+          const SectionTitle(title: 'アプリ情報'),
           SettingItem(
             title: 'プライバシーポリシー',
             onTap: () {
               // プライバシーポリシー画面に移動する処理をあとで追加
             },
           ),
-          CustomDivider(),
+          const CustomDivider(),
           SettingItem(
             title: '利用規約',
             onTap: () {
