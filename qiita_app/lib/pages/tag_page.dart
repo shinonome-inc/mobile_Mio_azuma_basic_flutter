@@ -19,6 +19,7 @@ class _TagPageState extends State<TagPage> {
   }
 
   List<Tag> tags = [];
+
   void fetchTags() async {
     List<Tag> fetchedTags = await QiitaRepository.fetchQiitaTags();
     setState(
@@ -37,16 +38,19 @@ class _TagPageState extends State<TagPage> {
         showSearchBar: false,
         showBottomDivider: true,
       ),
-      body: GridView.builder(
-        itemCount: tags.length,
-        itemBuilder: (context, index) {
-          return TagContainer(tag: tags[index]);
-        },
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 1.0,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0), // 左右の余白
+        child: GridView.builder(
+          itemCount: tags.length,
+          itemBuilder: (context, index) {
+            return TagContainer(tag: tags[index]);
+          },
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            childAspectRatio: 1.0,
+          ),
         ),
       ),
     );

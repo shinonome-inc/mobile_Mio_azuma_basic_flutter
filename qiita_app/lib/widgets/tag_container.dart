@@ -14,23 +14,30 @@ class TagContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin: const EdgeInsets.all(4),
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.divider),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center, // 中央寄せ
         children: [
           Image.network(tag.iconUrl),
-          Text(tag.id),
-          Text(
-            '記事件数:${tag.itemsCount}',
-            style: const TextStyle(fontSize: 16),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+            child: Text(tag.id),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              '記事件数:${tag.itemsCount}',
+              style: const TextStyle(fontSize: 16, color: AppColors.secondary),
+            ),
           ),
           Text(
             'フォロワー数:${tag.followersCount}',
-            style: const TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16, color: AppColors.secondary),
           ),
         ],
       ),
