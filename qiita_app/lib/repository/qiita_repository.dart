@@ -6,6 +6,24 @@ import 'package:qiita_app/models/article.dart';
 import '../constants/urls.dart';
 
 class QiitaRepository {
+  static String _exceptionMessage(int statusCode) {
+    debugPrint('Status code: $statusCode');
+    switch (statusCode) {
+      case 400:
+        return 'Bad request. Please check the request format and try again.';
+      case 401:
+        return 'Unauthorized. You might not have permission to access the data.';
+      case 403:
+        return 'Forbidden. Access to the requested resource is denied.';
+      case 404:
+        return 'Not found. The requested resource could not be found.';
+      case 500:
+        return 'Internal Server Error. Please try again later.';
+      default:
+        return 'Failed to make request.';
+    }
+  }
+
   static Future<List<Article>> fetchQiitaItems() async {
     final url = Uri.parse('${Urls.qiitaBaseUrl}/items');
     try {
@@ -16,29 +34,10 @@ class QiitaRepository {
         return jsonResponse.map((data) => Article.fromJson(data)).toList();
       } else {
         // ステータスコードに応じたエラーメッセージを設定
-        switch (response.statusCode) {
-          case 400:
-            throw Exception(
-                'Bad request. Please check the request format and try again.');
-          case 401:
-            throw Exception(
-                'Unauthorized. You might not have permission to access the data.');
-          case 403:
-            throw Exception(
-                'Forbidden. Access to the requested resource is denied.');
-          case 404:
-            throw Exception(
-                'Not found. The requested resource could not be found.');
-          case 500:
-            throw Exception('Internal Server Error. Please try again later.');
-          default:
-            throw Exception(
-                'Failed to fetch Qiita items. Status code: ${response.statusCode}');
-        }
+        throw Exception(_exceptionMessage(response.statusCode));
       }
     } catch (e) {
       // 例外が発生した場合のエラーハンドリング
-      debugPrint('Exception caught: $e');
       throw Exception('Failed to load Qiita items: $e');
     }
   }
