@@ -26,10 +26,23 @@ class _SettingsPageState extends State<SettingsPage> {
     setVersion();
   }
 
+  Widget buildCustomDivider({
+    Color color = AppColors.divider,
+    double height = 1.0,
+    double indent = 16.0,
+  }) {
+    return Divider(
+      color: color,
+      height: height,
+      indent: indent,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      // TODO: feedpage作成後に修正
       appBar: AppBar(
         backgroundColor: Colors.white,
         bottom: PreferredSize(
@@ -59,14 +72,14 @@ class _SettingsPageState extends State<SettingsPage> {
               // プライバシーポリシー画面に移動する処理をあとで追加
             },
           ),
-          const CustomDivider(),
+          buildCustomDivider(),
           SettingItem(
             title: '利用規約',
             onTap: () {
               // 利用規約画面に移動する処理をあとで追加
             },
           ),
-          const CustomDivider(),
+          buildCustomDivider(),
           ListTile(
             tileColor: Colors.white,
             title: Row(
@@ -77,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
           ),
-          const CustomDivider(),
+          buildCustomDivider(),
           const SectionTitle(title: 'その他'),
           SettingItem(
             title: 'ログアウトする',
@@ -86,7 +99,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
             showArrow: false,
           ),
-          const CustomDivider(),
+          buildCustomDivider(),
         ],
       ),
     );
