@@ -13,7 +13,7 @@ class SearchBarWithIcon extends StatelessWidget {
       height: 54,
       child: TextField(
         decoration: InputDecoration(
-          hintText: 'Search...',
+          hintText: 'Search',
           hintStyle: const TextStyle(
             fontSize: 17,
           ),

@@ -7,7 +7,6 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final TextStyle? style;
   final Color backgroundColor;
-  final Color dividerColor;
   final double dividerHeight;
   final bool showBottomDivider;
   final bool showSearchBar;
@@ -17,7 +16,6 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.style,
     this.backgroundColor = AppColors.background,
-    this.dividerColor = AppColors.divider,
     this.dividerHeight = 1.0,
     this.showBottomDivider = true,
     this.showSearchBar = false,
@@ -25,38 +23,49 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PreferredSize(
-      preferredSize: preferredSize,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: AppColors.divider,
-              width: 0.2,
-            ),
+    final Color dividerColor = Theme.of(context).dividerColor;
+    // コンテンツを LayoutBuilder でラップして高さを動的に計算
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            border: showBottomDivider
+                ? Border(
+                    bottom: BorderSide(color: dividerColor, width: 0.2),
+                  )
+                : null,
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 44.0),
-              child: TextAppTitle(
-                text: title,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(
+                  top: 48.0,
+                  bottom: 4.0,
+                ),
+                child: TextAppTitle(
+                  text: title,
+                  // style: style,
+                ),
               ),
-            ),
-            if (showSearchBar) const SearchBarWithIcon(),
-          ],
-        ),
-      ),
+              if (showSearchBar) const SearchBarWithIcon(),
+              if (showBottomDivider) SizedBox(height: dividerHeight),
+            ],
+          ),
+        );
+      },
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(
-        kToolbarHeight +
-            (showSearchBar ? 36 : 0) +
-            (showBottomDivider ? dividerHeight : 0),
-      ); // AppBarの高さ + 区切り線の高さ
+  Size get preferredSize {
+    // 条件に基づいて高さを動的に計算
+    double height = kToolbarHeight; // タイトルのための基本高さ
+    if (showSearchBar) height += 56.0; // SearchBar の高さに基づいて調整
+    if (showBottomDivider) height += dividerHeight;
+    return Size.fromHeight(height);
+  }
 }
