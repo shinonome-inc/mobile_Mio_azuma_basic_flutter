@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
+import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/widgets/searchbar.dart';
-import 'package:qiita_app/widgets/text_app_title.dart';
 
 class AppTitle extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -24,48 +24,43 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final Color dividerColor = Theme.of(context).dividerColor;
-    // コンテンツを LayoutBuilder でラップして高さを動的に計算
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            border: showBottomDivider
-                ? Border(
-                    bottom: BorderSide(color: dividerColor, width: 0.2),
-                  )
-                : null,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(
-                  top: 48.0,
-                  bottom: 4.0,
+    return SafeArea(
+      // SafeArea を追加
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              border: showBottomDivider
+                  ? Border(
+                      bottom: BorderSide(color: dividerColor, width: 0.2),
+                    )
+                  : null,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: style ?? AppTextStyles.apptitle,
                 ),
-                child: TextAppTitle(
-                  text: title,
-                  // style: style,
-                ),
-              ),
-              if (showSearchBar) const SearchBarWithIcon(),
-              if (showBottomDivider) SizedBox(height: dividerHeight),
-            ],
-          ),
-        );
-      },
+                if (showSearchBar) const SearchBarWithIcon(),
+                if (showBottomDivider) SizedBox(height: dividerHeight),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
   @override
   Size get preferredSize {
-    // 条件に基づいて高さを動的に計算
-    double height = kToolbarHeight; // タイトルのための基本高さ
-    if (showSearchBar) height += 56.0; // SearchBar の高さに基づいて調整
-    if (showBottomDivider) height += dividerHeight;
+    double height = kToolbarHeight; // 基本高さ
+    if (showSearchBar) height += 56.0; // SearchBar の高さ追加
+    if (showBottomDivider) height += dividerHeight; // Divider の高さ追加
     return Size.fromHeight(height);
   }
 }
