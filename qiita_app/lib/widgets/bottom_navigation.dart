@@ -14,10 +14,7 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
-    // FeedPage(),
-    Text(
-      'Index 1: tag',
-    ),
+    FeedPage(),
     Text(
       'Index 1: tag',
     ),
