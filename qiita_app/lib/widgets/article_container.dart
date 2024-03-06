@@ -35,23 +35,13 @@ class ArticleContainer extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          '＠${article.userName}',
-                          style: AppTextStyles.h3BasicSecondary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '投稿日:${article.postedDate}',
-                          style: AppTextStyles.h3BasicSecondary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'いいね：${article.likesCount}',
-                          style: AppTextStyles.h3BasicSecondary,
-                        ),
-                      ],
+                    Text(
+                      '@${article.userName} '
+                      '投稿日: ${article.postedDate} '
+                      'いいね: ${article.likesCount}',
+                      style: AppTextStyles.h3BasicSecondary,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

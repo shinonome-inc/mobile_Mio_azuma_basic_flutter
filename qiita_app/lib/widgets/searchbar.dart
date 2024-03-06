@@ -8,9 +8,8 @@ class SearchBarWithIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      height: 54,
+    return SizedBox(
+      height: 36,
       child: TextField(
         decoration: InputDecoration(
           hintText: 'Search',

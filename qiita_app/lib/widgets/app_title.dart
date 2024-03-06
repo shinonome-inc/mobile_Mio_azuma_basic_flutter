@@ -26,32 +26,30 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
     final Color dividerColor = Theme.of(context).dividerColor;
     return SafeArea(
       // SafeArea を追加
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              border: showBottomDivider
-                  ? Border(
-                      bottom: BorderSide(color: dividerColor, width: 0.2),
-                    )
-                  : null,
+      child: Container(
+        height: 114,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          border: showBottomDivider
+              ? Border(
+                  bottom: BorderSide(color: dividerColor, width: 0.2),
+                )
+              : null,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 11),
+            Text(
+              title,
+              style: style ?? AppTextStyles.apptitle,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: style ?? AppTextStyles.apptitle,
-                ),
-                if (showSearchBar) const SearchBarWithIcon(),
-                if (showBottomDivider) SizedBox(height: dividerHeight),
-              ],
-            ),
-          );
-        },
+            const SizedBox(height: 19),
+            if (showSearchBar) const SearchBarWithIcon(),
+            if (showBottomDivider) SizedBox(height: dividerHeight),
+          ],
+        ),
       ),
     );
   }
