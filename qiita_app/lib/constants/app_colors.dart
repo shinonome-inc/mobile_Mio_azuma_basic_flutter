@@ -10,4 +10,5 @@ class AppColors {
   static const black = Colors.black;
   static const background = Color(0xFFFAFAFA);
   static const divider = Color(0xFFE0E0E0);
+  static const Color transparent = Colors.transparent;
 }

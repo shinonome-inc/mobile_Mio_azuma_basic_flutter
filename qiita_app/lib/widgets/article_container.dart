@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
+import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/models/article.dart';
-import 'package:qiita_app/widgets/text_bold_size_m.dart';
-import 'package:qiita_app/widgets/text_regular_size_s.dart';
 
 class ArticleContainer extends StatelessWidget {
   const ArticleContainer({
@@ -30,25 +29,19 @@ class ArticleContainer extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextBoldSizeM(
-                      text: article.title,
+                    Text(
+                      article.title,
+                      style: AppTextStyles.h2BasicBlack,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Row(
-                      children: [
-                        TextRegularSizeS(
-                          text: '＠${article.userName}',
-                        ),
-                        const SizedBox(width: 4),
-                        TextRegularSizeS(
-                          text: '投稿日:${article.postedDate}',
-                        ),
-                        const SizedBox(width: 4),
-                        TextRegularSizeS(
-                          text: 'いいね：${article.likesCount}',
-                        ),
-                      ],
+                    Text(
+                      '@${article.userName} '
+                      '投稿日: ${article.postedDate} '
+                      'いいね: ${article.likesCount}',
+                      style: AppTextStyles.h3BasicSecondary,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

@@ -16,14 +16,7 @@ dependencies:
 
   cupertino_icons: ^1.0.6
   intl: ^0.17.0
-
-# dependencies:
-#   flutter:
-#     sdk: flutter
-#   modal_bottom_sheet: ^2.1.2
-
-# # dependencies:
-# #   modal_bottom_sheet: ^2.1.2
+  modal_bottom_sheet: ^2.1.2
   
 
 dev_dependencies:

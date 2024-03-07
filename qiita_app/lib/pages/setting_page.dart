@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/constants/texts.dart';
 import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
-// import 'package:qiita_app/constants/texts.dart';
+
 import 'package:qiita_app/widgets/rounded_edge_button.dart';
 import 'package:qiita_app/constants/app_colors.dart';
-// import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -28,7 +28,10 @@ class _SettingPageState extends State<SettingPage> {
                 showAppBottomModalSheet(
                   context,
                   title: "プライバシーポリシー",
-                  content: Texts.privacyPolicyText,
+                  content: const Text(
+                    Texts.privacyPolicyText,
+                    style: AppTextStyles.h3BasicBlack,
+                  ),
                 );
               },
             ),
@@ -42,7 +45,10 @@ class _SettingPageState extends State<SettingPage> {
                 showAppBottomModalSheet(
                   context,
                   title: "利用規約",
-                  content: Texts.termsService,
+                  content: const Text(
+                    Texts.termsService,
+                    style: AppTextStyles.h3BasicBlack,
+                  ),
                 );
               },
             ),
