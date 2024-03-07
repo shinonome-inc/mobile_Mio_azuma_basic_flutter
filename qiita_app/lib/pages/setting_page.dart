@@ -45,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const AppTitle(
-        title: "Setting",
+        title: "Settings",
         showSearchBar: false,
         showBottomDivider: true,
       ),
