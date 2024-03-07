@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qiita_app/constants/app_colors.dart';
+import 'package:qiita_app/widgets/app_title.dart';
 
 import '../widgets/setting_item.dart';
 
@@ -42,26 +43,10 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      // TODO: feedpage作成後に修正
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: Colors.grey.withOpacity(0.5),
-            height: 1,
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Settings',
-              style: TextStyle(fontFamily: 'Pacifico'),
-            ),
-          ],
-        ),
+      appBar: const AppTitle(
+        title: "Setting",
+        showSearchBar: false,
+        showBottomDivider: true,
       ),
       body: ListView(
         children: [
