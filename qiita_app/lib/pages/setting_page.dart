@@ -30,7 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget buildCustomDivider({
     Color color = AppColors.divider,
-    double height = 1.0,
+    double height = 0.5,
     double indent = 16.0,
   }) {
     return Divider(
