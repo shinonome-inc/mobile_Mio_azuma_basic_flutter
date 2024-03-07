@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/widgets/app_title.dart';
+import 'package:qiita_app/widgets/setting_section_title.dart';
 
 import '../widgets/setting_item.dart';
 
