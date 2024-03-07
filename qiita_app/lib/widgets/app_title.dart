@@ -15,7 +15,7 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
     Key? key,
     required this.title,
     this.style,
-    this.backgroundColor = AppColors.background,
+    this.backgroundColor = AppColors.white,
     this.dividerHeight = 1.0,
     this.showBottomDivider = true,
     this.showSearchBar = false,
