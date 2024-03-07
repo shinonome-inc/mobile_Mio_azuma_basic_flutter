@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 
-class TextAppTitle extends StatelessWidget {
+class TextBoldSizeM extends StatelessWidget {
   final String text;
   final double fontSize;
   final Color color;
-  final TextStyle style;
+  final int? maxLines;
+  final TextOverflow? overflow;
 
-  const TextAppTitle({
+  const TextBoldSizeM({
     Key? key,
     required this.text,
-    this.fontSize = 17.0,
+    this.fontSize = 14.0,
     this.color = AppColors.black,
-    this.style = const TextStyle(
-      fontFamily: 'Pacifico',
-      fontSize: 17,
-      color: AppColors.black,
-    ),
+    this.maxLines,
+    this.overflow,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-        fontFamily: 'Pacifico',
-        fontSize: 17,
-        color: AppColors.black,
+      style: TextStyle(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w500,
+        color: color,
       ),
+      maxLines: maxLines,
+      overflow: overflow,
     );
   }
 }

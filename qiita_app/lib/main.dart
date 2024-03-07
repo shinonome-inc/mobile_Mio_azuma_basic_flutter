@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qiita_app/constants/app_colors.dart';
 
 import 'pages/top_page.dart';
 
@@ -13,7 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'qiita_app',
-      theme: ThemeData(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          background: AppColors.background,
+        ),
+        dividerColor: AppColors.divider,
+      ),
       home: const TopPage(title: 'Qiita Feed App'),
     );
   }
