@@ -21,7 +21,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     Text(
       'Index 2: mypage',
     ),
-    SettingPage(),
+    SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
