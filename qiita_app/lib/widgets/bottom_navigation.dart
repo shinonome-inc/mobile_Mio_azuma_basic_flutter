@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/pages/feed_page.dart';
 import 'package:qiita_app/pages/setting_page.dart';
@@ -35,6 +35,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return Scaffold(
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: AppColors.white,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),

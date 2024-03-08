@@ -49,7 +49,6 @@ class _SettingsPageState extends State<SettingsPage> {
         title: "Settings",
         showSearchBar: false,
         showBottomDivider: true,
-        // dividerHeight: 4.2,
       ),
       body: ListView(
         children: [
@@ -107,48 +106,3 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
-// class _SettingPageState extends State<SettingPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             RoundedEdgeButton(
-//               text: "プライバシーポリシー",
-//               backgroundColor: AppColors.primary,
-//               onPressed: () {
-//                 showAppBottomModalSheet(
-//                   context,
-//                   title: "プライバシーポリシー",
-//                   content: const Text(
-//                     Texts.privacyPolicyText,
-//                     style: AppTextStyles.h2BasicBlack,
-//                   ),
-//                 );
-//               },
-//             ),
-//             const SizedBox(
-//               height: 42,
-//             ),
-//             RoundedEdgeButton(
-//               text: "利用規約",
-//               backgroundColor: AppColors.primary,
-//               onPressed: () {
-//                 showAppBottomModalSheet(
-//                   context,
-//                   title: "利用規約",
-//                   content: const Text(
-//                     Texts.termsService,
-//                     style: AppTextStyles.h3BasicBlack,
-//                   ),
-//                 );
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
