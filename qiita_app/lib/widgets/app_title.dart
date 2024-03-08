@@ -7,7 +7,6 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final TextStyle? style;
   final Color backgroundColor;
-  final Color dividerColor;
   final double dividerHeight;
   final bool showBottomDivider;
   final bool showSearchBar;
@@ -16,7 +15,6 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
     Key? key,
     required this.title,
     this.style,
-    this.dividerColor = AppColors.divider,
     this.backgroundColor = AppColors.white,
     this.dividerHeight = 1.0,
     this.showBottomDivider = true,
