@@ -30,7 +30,9 @@ class QiitaRepository {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);
-      return jsonResponse.map((data) => Tag.fromJson(data)).toList();
+      final List<Tag> tagList =
+          jsonResponse.map((data) => Tag.fromJson(data)).toList();
+      return tagList;
     } else {
       debugPrint(
           'Failed to fetch Qiita tags. Status code: ${response.statusCode}');

@@ -6,7 +6,7 @@ class AppColors {
   static const secondary = Color.fromRGBO(130, 130, 130, 1);
   static const gray = Color.fromRGBO(118, 118, 128, 0.12);
   static const white = Colors.white;
-  static const black = Colors.black;
+  static const black = Color(0xFF333333);
   static const background = Color(0xFFFAFAFA);
   static const divider = Color(0xFFE0E0E0);
 }

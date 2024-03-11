@@ -32,12 +32,12 @@ class TagContainer extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
               '記事件数:${tag.itemsCount}',
-              style: const TextStyle(fontSize: 16, color: AppColors.secondary),
+              style: const TextStyle(fontSize: 12, color: AppColors.secondary),
             ),
           ),
           Text(
             'フォロワー数:${tag.followersCount}',
-            style: const TextStyle(fontSize: 16, color: AppColors.secondary),
+            style: const TextStyle(fontSize: 12, color: AppColors.secondary),
           ),
         ],
       ),
