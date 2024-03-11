@@ -17,4 +17,14 @@ class AppTextStyles {
     color: AppColors.secondary,
     fontWeight: FontWeight.w500,
   );
+  static const TextStyle h3BasicBlack = TextStyle(
+    fontSize: 12,
+    color: AppColors.black,
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle h1ThinBlack = TextStyle(
+    fontSize: 17,
+    color: AppColors.black,
+    fontWeight: FontWeight.w100,
+  );
 }
