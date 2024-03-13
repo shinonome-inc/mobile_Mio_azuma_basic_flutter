@@ -12,16 +12,28 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
+  // テキストフィールドの入力を管理する
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     fetchArticles();
   }
 
+  @override
+  void dispose() {
+    _searchController.dispose(); // ウィジェットが破棄される際にTextEditingControllerをクリーンアップ
+    super.dispose();
+  }
+
   List<Article> articles = [];
-  void fetchArticles() async {
+
+  void fetchArticles({String query = ''}) async {
+    final encodedQuery = Uri.encodeComponent(query);
     // QiitaRepositoryから記事データを非同期で取得
-    List<Article> fetchedArticles = await QiitaRepository.fetchQiitaItems();
+    List<Article> fetchedArticles =
+        await QiitaRepository.fetchQiitaItems(query: encodedQuery);
     // 取得した記事データをステートにセット
     setState(() {
       articles = fetchedArticles;
@@ -31,19 +43,36 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppTitle(
+      appBar: AppTitle(
         title: 'Feed',
         showSearchBar: true,
         showBottomDivider: true,
-      ),
-      body: ListView.builder(
-        itemCount: articles.length,
-        itemBuilder: (context, index) {
-          return ArticleContainer(
-            article: articles[index],
-          );
+        searchController: _searchController,
+        onSearch: (query) {
+          final searchQuery = QiitaRepository.buildQuery(query);
+          fetchArticles(query: searchQuery);
         },
       ),
+      body: Builder(builder: (context) {
+        if (articles.isEmpty && _searchController.text.isEmpty) {
+          return const Center(
+            child: Text('キーワードを検索してください'),
+          );
+        } else if (articles.isEmpty && _searchController.text.isNotEmpty) {
+          return const Center(
+            child: Text('検索結果がありません'),
+          );
+        } else {
+          return ListView.builder(
+            itemCount: articles.length,
+            itemBuilder: (context, index) {
+              return ArticleContainer(
+                article: articles[index],
+              );
+            },
+          );
+        }
+      }),
     );
   }
 }
