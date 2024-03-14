@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
@@ -60,7 +61,20 @@ class _FeedPageState extends State<FeedPage> {
           );
         } else if (articles.isEmpty && _searchController.text.isNotEmpty) {
           return const Center(
-            child: Text('検索結果がありません'),
+            child: Column(
+              children: [
+                SizedBox(height: 228),
+                Text(
+                  '検索にマッチする記事はありませんでした',
+                  style: AppTextStyles.h2BasicBlack,
+                ),
+                SizedBox(height: 18),
+                Text(
+                  '検索条件を変えるなどして再度検索をしてください',
+                  style: AppTextStyles.h3BasicSecondary,
+                )
+              ],
+            ),
           );
         } else {
           return ListView.builder(
