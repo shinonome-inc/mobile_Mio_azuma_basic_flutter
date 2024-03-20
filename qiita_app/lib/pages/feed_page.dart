@@ -4,6 +4,7 @@ import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
 import 'package:qiita_app/widgets/article_container.dart';
+import 'package:flutter/cupertino.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   // テキストフィールドの入力を管理する
   final TextEditingController _searchController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -31,6 +33,10 @@ class _FeedPageState extends State<FeedPage> {
   List<Article> articles = [];
 
   void fetchArticles({String query = ''}) async {
+    setState(() {
+      _isLoading = true; // ローディング開始
+    });
+
     final encodedQuery = Uri.encodeComponent(query);
     // QiitaRepositoryから記事データを非同期で取得
     List<Article> fetchedArticles =
@@ -38,6 +44,7 @@ class _FeedPageState extends State<FeedPage> {
     // 取得した記事データをステートにセット
     setState(() {
       articles = fetchedArticles;
+      _isLoading = false; // ローディング終了
     });
   }
 
@@ -55,10 +62,14 @@ class _FeedPageState extends State<FeedPage> {
         },
       ),
       body: Builder(builder: (context) {
-        if (articles.isEmpty && _searchController.text.isEmpty) {
+        if (_isLoading) {
           return const Center(
-            child: Text('キーワードを検索してください'),
-          );
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CupertinoActivityIndicator(),
+            ],
+          ));
         } else if (articles.isEmpty && _searchController.text.isNotEmpty) {
           return const Center(
             child: Column(
