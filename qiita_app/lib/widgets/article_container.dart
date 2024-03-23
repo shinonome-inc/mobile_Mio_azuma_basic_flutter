@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
-import 'package:qiita_app/widgets/article_modal.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleContainer extends StatelessWidget {
   const ArticleContainer({
@@ -17,10 +19,23 @@ class ArticleContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        final Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers = {
+          Factory(() => EagerGestureRecognizer())
+        };
+
+        UniqueKey key = UniqueKey();
+
         showAppBottomModalSheet(
           context,
           title: "Article",
-          content: ArticleModal(article: article),
+          content: WebViewWidget(
+            gestureRecognizers: gestureRecognizers,
+            key: key,
+            controller: WebViewController()
+              ..loadRequest(
+                Uri.parse(article.url),
+              ),
+          ),
         );
       },
       child: Column(

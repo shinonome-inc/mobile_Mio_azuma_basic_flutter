@@ -51,9 +51,7 @@ class AppBottomModalSheet extends StatelessWidget {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 18),
-                child: SingleChildScrollView(
-                  child: content,
-                ),
+                child: content,
               ),
             ),
           ],
