@@ -37,7 +37,6 @@ class _FeedPageState extends State<FeedPage> {
       _isLoading = true; // ローディング開始
     });
 
-    // final encodedQuery = Uri.encodeComponent(query);
     // QiitaRepositoryから記事データを非同期で取得
     List<Article> fetchedArticles =
         await QiitaRepository.fetchQiitaItems(query: query);
