@@ -12,20 +12,37 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
+  late ScrollController _scrollController; // スクロールコントローラーを追加
+  List<Article> articles = [];
+  bool isLoading = false; // データ読み込み中かどうかを示すフラグを追加
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController(); // スクロールコントローラーを初期化
     fetchArticles();
+    _scrollController.addListener(_scrollListener); // スクロールリスナーを追加
   }
 
-  List<Article> articles = [];
   void fetchArticles() async {
-    // QiitaRepositoryから記事データを非同期で取得
-    List<Article> fetchedArticles = await QiitaRepository.fetchQiitaItems();
-    // 取得した記事データをステートにセット
-    setState(() {
-      articles = fetchedArticles;
-    });
+    if (!isLoading) {
+      // データ読み込み中でなければ実行
+      setState(() {
+        isLoading = true; // 読み込みを開始
+      });
+      List<Article> fetchedArticles = await QiitaRepository.fetchQiitaItems();
+      setState(() {
+        articles.addAll(fetchedArticles); // 取得した記事を既存のリストに追加
+        isLoading = false; // 読み込み終了
+      });
+    }
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      fetchArticles();
+    }
   }
 
   @override
@@ -37,6 +54,7 @@ class _FeedPageState extends State<FeedPage> {
         showBottomDivider: true,
       ),
       body: ListView.builder(
+        controller: _scrollController, // スクロールコントローラーを設定
         itemCount: articles.length,
         itemBuilder: (context, index) {
           return ArticleContainer(
@@ -45,5 +63,11 @@ class _FeedPageState extends State<FeedPage> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // スクロールコントローラーを破棄
+    super.dispose();
   }
 }
