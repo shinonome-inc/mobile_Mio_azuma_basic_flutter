@@ -53,9 +53,7 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
             if (showSearchBar && searchController != null && onSearch != null)
               SearchBarWithIcon(
                 searchController: searchController!,
-                onSearch: (query) {
-                  onSearch!(query);
-                },
+                onSearch: onSearch!,
               ),
             if (showBottomDivider) SizedBox(height: dividerHeight),
           ],

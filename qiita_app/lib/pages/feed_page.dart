@@ -37,10 +37,10 @@ class _FeedPageState extends State<FeedPage> {
       _isLoading = true; // ローディング開始
     });
 
-    final encodedQuery = Uri.encodeComponent(query);
+    // final encodedQuery = Uri.encodeComponent(query);
     // QiitaRepositoryから記事データを非同期で取得
     List<Article> fetchedArticles =
-        await QiitaRepository.fetchQiitaItems(query: encodedQuery);
+        await QiitaRepository.fetchQiitaItems(query: query);
     // 取得した記事データをステートにセット
     setState(() {
       articles = fetchedArticles;
@@ -64,12 +64,8 @@ class _FeedPageState extends State<FeedPage> {
       body: Builder(builder: (context) {
         if (_isLoading) {
           return const Center(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CupertinoActivityIndicator(),
-            ],
-          ));
+            child: CupertinoActivityIndicator(),
+          );
         } else if (articles.isEmpty && _searchController.text.isNotEmpty) {
           return const Center(
             child: Column(
