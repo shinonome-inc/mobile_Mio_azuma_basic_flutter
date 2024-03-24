@@ -45,7 +45,7 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
               title,
               style: style ?? AppTextStyles.apptitle,
             ),
-            const SizedBox(height: 19),
+            const SizedBox(height: 10),
             if (showSearchBar) const SearchBarWithIcon(),
             if (showBottomDivider) SizedBox(height: dividerHeight),
           ],
