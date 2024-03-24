@@ -15,6 +15,7 @@ class _FeedPageState extends State<FeedPage> {
   late ScrollController _scrollController; // スクロールコントローラーを追加
   List<Article> articles = [];
   bool isLoading = false; // データ読み込み中かどうかを示すフラグを追加
+  int currentPage = 1;
 
   @override
   void initState() {
@@ -26,14 +27,14 @@ class _FeedPageState extends State<FeedPage> {
 
   void fetchArticles() async {
     if (!isLoading) {
-      // データ読み込み中でなければ実行
       setState(() {
-        isLoading = true; // 読み込みを開始
+        isLoading = true;
       });
-      List<Article> fetchedArticles = await QiitaRepository.fetchQiitaItems();
+      List<Article> fetchedArticles =
+          await QiitaRepository.fetchQiitaItems(currentPage);
       setState(() {
-        articles.addAll(fetchedArticles); // 取得した記事を既存のリストに追加
-        isLoading = false; // 読み込み終了
+        articles.addAll(fetchedArticles);
+        isLoading = false;
       });
     }
   }
@@ -41,6 +42,8 @@ class _FeedPageState extends State<FeedPage> {
   void _scrollListener() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
+      // 最下部にスクロールした時に次のページを読み込む
+      currentPage++; // 次のページ番号を更新
       fetchArticles();
     }
   }

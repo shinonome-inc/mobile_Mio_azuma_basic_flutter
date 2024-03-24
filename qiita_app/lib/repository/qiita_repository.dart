@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:qiita_app/models/article.dart';
+
 import '../constants/urls.dart';
 
 class QiitaRepository {
@@ -24,8 +25,8 @@ class QiitaRepository {
     }
   }
 
-  static Future<List<Article>> fetchQiitaItems() async {
-    final url = Uri.parse('${Urls.qiitaBaseUrl}/items');
+  static Future<List<Article>> fetchQiitaItems(int page) async {
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/items?page=$page');
     try {
       final response = await http.get(url);
 
