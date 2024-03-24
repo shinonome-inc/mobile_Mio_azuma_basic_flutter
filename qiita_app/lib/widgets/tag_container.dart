@@ -28,8 +28,7 @@ class TagContainer extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
             child: Text(tag.id),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+          Expanded(
             child: Text(
               '記事件数:${tag.itemsCount}',
               style: const TextStyle(
@@ -38,12 +37,15 @@ class TagContainer extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            'フォロワー数:${tag.followersCount}',
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.secondary,
+          const SizedBox(height: 8.0),
+          Expanded(
+            child: Text(
+              'フォロワー数:${tag.followersCount}',
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.secondary,
+              ),
             ),
           ),
         ],
