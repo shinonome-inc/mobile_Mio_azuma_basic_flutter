@@ -26,17 +26,16 @@ class _FeedPageState extends State<FeedPage> {
   }
 
   void fetchArticles() async {
-    if (!isLoading) {
-      setState(() {
-        isLoading = true;
-      });
-      List<Article> fetchedArticles =
-          await QiitaRepository.fetchQiitaItems(currentPage);
-      setState(() {
-        articles.addAll(fetchedArticles);
-        isLoading = false;
-      });
-    }
+    if (isLoading) return;
+    setState(() {
+      isLoading = true;
+    });
+    List<Article> fetchedArticles =
+        await QiitaRepository.fetchQiitaItems(currentPage);
+    setState(() {
+      articles.addAll(fetchedArticles);
+      isLoading = false;
+    });
   }
 
   void _scrollListener() {
