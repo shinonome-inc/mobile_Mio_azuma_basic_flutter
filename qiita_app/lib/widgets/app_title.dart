@@ -11,6 +11,8 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
   final bool showBottomDivider;
   final bool showSearchBar;
   final bool showReturnIcon;
+  final TextEditingController? searchController;
+  final Function(String)? onSearch;
 
   const AppTitle({
     Key? key,
@@ -21,6 +23,8 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
     this.showBottomDivider = true,
     this.showSearchBar = false,
     this.showReturnIcon = false,
+    this.onSearch,
+    this.searchController,
   }) : super(key: key);
 
   @override
@@ -61,7 +65,13 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
                     style: style ?? AppTextStyles.apptitle,
                   ),
                   const SizedBox(height: 10),
-                  if (showSearchBar) const SearchBarWithIcon(),
+                  if (showSearchBar &&
+                      searchController != null &&
+                      onSearch != null)
+                    SearchBarWithIcon(
+                      searchController: searchController!,
+                      onSearch: onSearch!,
+                    ),
                   if (showBottomDivider) SizedBox(height: dividerHeight),
                 ],
               ),
