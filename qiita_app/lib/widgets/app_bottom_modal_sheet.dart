@@ -49,10 +49,7 @@ class AppBottomModalSheet extends StatelessWidget {
                 height: 0.4,
               ),
             Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 18),
-                child: content,
-              ),
+              child: content,
             ),
           ],
         );

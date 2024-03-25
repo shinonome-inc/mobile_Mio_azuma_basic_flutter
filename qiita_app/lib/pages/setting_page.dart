@@ -60,10 +60,14 @@ class _SettingsPageState extends State<SettingsPage> {
               showAppBottomModalSheet(
                 context,
                 title: "プライバシーポリシー",
-                content: const SingleChildScrollView(
-                  child: Text(
-                    Texts.privacyPolicyText,
-                    style: AppTextStyles.h2BasicBlack,
+                content: SingleChildScrollView(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, top: 18),
+                    child: const Text(
+                      Texts.privacyPolicyText,
+                      style: AppTextStyles.h2BasicBlack,
+                    ),
                   ),
                 ),
               );
@@ -76,10 +80,14 @@ class _SettingsPageState extends State<SettingsPage> {
               showAppBottomModalSheet(
                 context,
                 title: "利用規約",
-                content: const SingleChildScrollView(
-                  child: Text(
-                    Texts.termsService,
-                    style: AppTextStyles.h3BasicBlack,
+                content: SingleChildScrollView(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, top: 18),
+                    child: const Text(
+                      Texts.termsService,
+                      style: AppTextStyles.h3BasicBlack,
+                    ),
                   ),
                 ),
               );
