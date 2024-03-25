@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 
 import 'pages/top_page.dart';
-import 'repository/qiita_repository.dart';
 
 void main() {
   runApp(const MyApp());
