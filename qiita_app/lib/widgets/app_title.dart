@@ -10,6 +10,7 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
   final double dividerHeight;
   final bool showBottomDivider;
   final bool showSearchBar;
+  final bool showReturnIcon;
 
   const AppTitle({
     Key? key,
@@ -19,13 +20,13 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
     this.dividerHeight = 1.0,
     this.showBottomDivider = true,
     this.showSearchBar = false,
+    this.showReturnIcon = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final Color dividerColor = Theme.of(context).dividerColor;
     return SafeArea(
-      // SafeArea を追加
       child: Container(
         height: 114,
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -37,17 +38,35 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
                 )
               : null,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 11),
-            Text(
-              title,
-              style: style ?? AppTextStyles.apptitle,
+        child: Row(
+          children: <Widget>[
+            if (showReturnIcon)
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                  );
+                },
+                icon: const Icon(Icons.arrow_back_ios),
+                iconSize: 20.0,
+                // padding: const EdgeInsets.only(left: 4),
+              ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 11),
+                  Text(
+                    title,
+                    style: style ?? AppTextStyles.apptitle,
+                  ),
+                  const SizedBox(height: 10),
+                  if (showSearchBar) const SearchBarWithIcon(),
+                  if (showBottomDivider) SizedBox(height: dividerHeight),
+                ],
+              ),
             ),
-            const SizedBox(height: 10),
-            if (showSearchBar) const SearchBarWithIcon(),
-            if (showBottomDivider) SizedBox(height: dividerHeight),
+            if (showReturnIcon) const SizedBox(width: 48),
           ],
         ),
       ),
