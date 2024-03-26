@@ -99,8 +99,10 @@ class QiitaRepository {
     }
   }
 
-  static Future<List<Article>> fetchArticlesByTag(String tagId) async {
-    final url = Uri.parse('${Urls.qiitaBaseUrl}/tags/$tagId/items');
+  static Future<List<Article>> fetchArticlesByTag(
+      String tagId, int page) async {
+    final url = Uri.parse(
+        '${Urls.qiitaBaseUrl}/tags/$tagId/items?page=$page&per_page=20');
     try {
       final response = await http.get(url);
 
