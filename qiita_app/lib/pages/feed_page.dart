@@ -17,9 +17,9 @@ class _FeedPageState extends State<FeedPage> {
   final TextEditingController _searchController = TextEditingController();
   late ScrollController _scrollController;
   List<Article> articles = [];
-  bool _isLoading = false;
+  bool isLoading = false; // データ読み込み中かどうかを示すフラグを追加
   int currentPage = 1;
-  bool isLoading = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
