@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/models/article.dart';
@@ -17,7 +16,7 @@ class _FeedPageState extends State<FeedPage> {
   final TextEditingController _searchController = TextEditingController();
   late ScrollController _scrollController;
   List<Article> articles = [];
-  bool isLoading = false; // データ読み込み中かどうかを示すフラグを追加
+  bool isLoading = false;
   int currentPage = 1;
   bool _isLoading = false;
 
@@ -47,7 +46,7 @@ class _FeedPageState extends State<FeedPage> {
         await QiitaRepository.fetchQiitaItems(query: query, page: currentPage);
     setState(() {
       if (currentPage == 1) {
-        articles.clear(); // ページ番号が1の場合はリストをクリア
+        articles.clear();
       }
       articles.addAll(fetchedArticles);
       _isLoading = false;
@@ -80,9 +79,9 @@ class _FeedPageState extends State<FeedPage> {
         },
       ),
       body: Builder(builder: (context) {
-        if (_isLoading) {
+        if (_isLoading && currentPage == 1) {
           return const Center(
-            child: CupertinoActivityIndicator(),
+            child: CircularProgressIndicator(),
           );
         } else if (articles.isEmpty && _searchController.text.isNotEmpty) {
           return const Center(
@@ -104,11 +103,17 @@ class _FeedPageState extends State<FeedPage> {
         } else {
           return ListView.builder(
             controller: _scrollController,
-            itemCount: articles.length,
+            itemCount: articles.length + (_isLoading ? 1 : 0),
             itemBuilder: (context, index) {
-              return ArticleContainer(
-                article: articles[index],
-              );
+              if (index < articles.length) {
+                return ArticleContainer(
+                  article: articles[index],
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
             },
           );
         }
