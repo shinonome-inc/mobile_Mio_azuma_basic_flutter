@@ -27,7 +27,8 @@ class QiitaRepository {
     }
   }
 
-  static Future<List<Article>> fetchQiitaItems({String query = ''}) async {
+  static Future<List<Article>> fetchQiitaItems(
+      {int page = 1, String query = ''}) async {
     Uri url; // Uriオブジェクトの初期宣言
     if (query.isNotEmpty) {
       // 検索クエリが空でない場合、クエリパラメータを含むURLを構築（エンコードなし）
@@ -37,7 +38,7 @@ class QiitaRepository {
       //     '${Urls.qiitaBaseUrl}/items?query=${Uri.encodeComponent(query)}');
     } else {
       // 検索クエリが空の場合、クエリパラメータを含まないURLを構築
-      url = Uri.parse('${Urls.qiitaBaseUrl}/items');
+      url = Uri.parse('${Urls.qiitaBaseUrl}/items?page=$page');
     }
 
     try {

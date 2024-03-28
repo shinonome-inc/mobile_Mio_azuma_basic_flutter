@@ -49,12 +49,7 @@ class AppBottomModalSheet extends StatelessWidget {
                 height: 0.4,
               ),
             Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 18),
-                child: SingleChildScrollView(
-                  child: content,
-                ),
-              ),
+              child: content,
             ),
           ],
         );
@@ -66,7 +61,7 @@ class AppBottomModalSheet extends StatelessWidget {
 class AppBottomModalHeader extends StatelessWidget {
   final String title;
 
-  const AppBottomModalHeader({required this.title, super.key});
+  const AppBottomModalHeader({required this.title, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +77,7 @@ class AppBottomModalHeader extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: Text(
         title,
-        style: AppTextStyles.h1ThinBlack,
+        style: AppTextStyles.apptitle, // 新しく定義したスタイルを使用
       ),
     );
   }

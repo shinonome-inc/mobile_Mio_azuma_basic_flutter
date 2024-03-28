@@ -4,7 +4,6 @@ import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
 import 'package:qiita_app/widgets/article_container.dart';
-import 'package:flutter/cupertino.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({Key? key}) : super(key: key);
@@ -14,37 +13,56 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-  // テキストフィールドの入力を管理する
   final TextEditingController _searchController = TextEditingController();
+  late ScrollController _scrollController;
+  List<Article> articles = [];
+  bool isLoading = false;
+  int currentPage = 1;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     fetchArticles();
+    _scrollController.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
-    _searchController.dispose(); // ウィジェットが破棄される際にTextEditingControllerをクリーンアップ
+    _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  List<Article> articles = [];
-
   void fetchArticles({String query = ''}) async {
+    if (isLoading) return;
     setState(() {
-      _isLoading = true; // ローディング開始
+      _isLoading = true;
+      isLoading = true;
     });
 
-    // QiitaRepositoryから記事データを非同期で取得
     List<Article> fetchedArticles =
-        await QiitaRepository.fetchQiitaItems(query: query);
-    // 取得した記事データをステートにセット
+        await QiitaRepository.fetchQiitaItems(query: query, page: currentPage);
     setState(() {
-      articles = fetchedArticles;
-      _isLoading = false; // ローディング終了
+      if (currentPage == 1) {
+        articles.clear();
+      }
+      articles.addAll(fetchedArticles);
+      _isLoading = false;
+      isLoading = false;
     });
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !isLoading) {
+      // isLoading フラグをチェックして新しいリクエストを行わないようにする
+      // 最下部にスクロールした時に次のページを読み込む
+      currentPage++; // 次のページ番号を更新
+      fetchArticles();
+    }
   }
 
   @override
@@ -56,14 +74,14 @@ class _FeedPageState extends State<FeedPage> {
         showBottomDivider: true,
         searchController: _searchController,
         onSearch: (query) {
-          final searchQuery = QiitaRepository.buildQuery(query);
-          fetchArticles(query: searchQuery);
+          currentPage = 1;
+          fetchArticles(query: query);
         },
       ),
       body: Builder(builder: (context) {
-        if (_isLoading) {
+        if (_isLoading && currentPage == 1) {
           return const Center(
-            child: CupertinoActivityIndicator(),
+            child: CircularProgressIndicator(),
           );
         } else if (articles.isEmpty && _searchController.text.isNotEmpty) {
           return const Center(
@@ -84,11 +102,18 @@ class _FeedPageState extends State<FeedPage> {
           );
         } else {
           return ListView.builder(
-            itemCount: articles.length,
+            controller: _scrollController,
+            itemCount: articles.length + (_isLoading ? 1 : 0),
             itemBuilder: (context, index) {
-              return ArticleContainer(
-                article: articles[index],
-              );
+              if (index < articles.length) {
+                return ArticleContainer(
+                  article: articles[index],
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
             },
           );
         }
