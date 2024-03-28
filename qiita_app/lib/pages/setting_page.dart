@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qiita_app/constants/app_colors.dart';
-import 'package:qiita_app/widgets/app_title.dart';
-import 'package:qiita_app/widgets/setting_section_title.dart';
-import '../widgets/setting_item.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/constants/texts.dart';
 import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
+import 'package:qiita_app/widgets/app_title.dart';
+import 'package:qiita_app/widgets/setting_section_title.dart';
+
+import '../widgets/setting_item.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -59,9 +60,15 @@ class _SettingsPageState extends State<SettingsPage> {
               showAppBottomModalSheet(
                 context,
                 title: "プライバシーポリシー",
-                content: const Text(
-                  Texts.privacyPolicyText,
-                  style: AppTextStyles.h2BasicBlack,
+                content: SingleChildScrollView(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, top: 18),
+                    child: const Text(
+                      Texts.privacyPolicyText,
+                      style: AppTextStyles.h2BasicBlack,
+                    ),
+                  ),
                 ),
               );
             },
@@ -73,9 +80,15 @@ class _SettingsPageState extends State<SettingsPage> {
               showAppBottomModalSheet(
                 context,
                 title: "利用規約",
-                content: const Text(
-                  Texts.termsService,
-                  style: AppTextStyles.h3BasicBlack,
+                content: SingleChildScrollView(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, top: 18),
+                    child: const Text(
+                      Texts.termsService,
+                      style: AppTextStyles.h3BasicBlack,
+                    ),
+                  ),
                 ),
               );
             },
