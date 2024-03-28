@@ -67,6 +67,21 @@ class _TopPageState extends State<TopPage> {
                     gestureRecognizers: gestureRecognizers,
                     key: key,
                     controller: WebViewController()
+                      ..setNavigationDelegate(
+                        NavigationDelegate(
+                          onNavigationRequest: (NavigationRequest request) {
+                            if (request.url.contains('code=')) {
+                              Uri uri = Uri.parse(request.url);
+                              String? code = uri.queryParameters['code'];
+                              if (code != null) {
+                                print('Received code: $code');
+                              }
+                              return NavigationDecision.prevent;
+                            }
+                            return NavigationDecision.navigate;
+                          },
+                        ),
+                      )
                       ..loadRequest(
                         Uri.parse(
                             'https://qiita.com/api/v2/oauth/authorize?client_id=${dotenv.env['CLIENTID']}&scope=read_qiita'),
