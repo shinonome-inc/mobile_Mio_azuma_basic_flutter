@@ -22,7 +22,7 @@ class TagDetailListPage extends StatefulWidget {
 class _TagDetailListPageState extends State<TagDetailListPage> {
   List<Article> articles = [];
   late final ScrollController _scrollController;
-  bool isLoading = false;
+  bool isLoading = true;
   int currentPage = 1; // 現在のページ番号を追跡
 
   @override
@@ -35,7 +35,6 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
 
   @override
   void dispose() {
-    // _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
   }
@@ -44,22 +43,23 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       currentPage++; // 次のページへ
-      fetchArticles();
+      fetchArticles(isPagination: true);
     }
   }
 
-  void fetchArticles() async {
-    if (isLoading) return;
-    setState(() {
-      isLoading = true;
-    });
-
-    List<Article> fetchArticles =
-        await QiitaRepository.fetchArticlesByTag(widget.tag.id, currentPage);
-    setState(() {
-      articles.addAll(fetchArticles);
-      isLoading = false;
-    });
+  void fetchArticles({bool isPagination = false}) async {
+    // 初回の読み込みでなければ、ローディング状態を更新しない
+    if (isPagination || isLoading) {
+      List<Article> fetchArticles =
+          await QiitaRepository.fetchArticlesByTag(widget.tag.id, currentPage);
+      setState(() {
+        articles.addAll(fetchArticles);
+        // 初回読み込みの完了後はisLoadingをfalseに設定
+        if (!isPagination) {
+          isLoading = false;
+        }
+      });
+    }
   }
 
   @override
