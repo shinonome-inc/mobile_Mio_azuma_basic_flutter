@@ -1,10 +1,15 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:qiita_app/constants/app_colors.dart';
-import 'package:qiita_app/widgets/rounded_edge_button.dart';
+import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
 import 'package:qiita_app/widgets/bottom_navigation.dart';
+import 'package:qiita_app/widgets/rounded_edge_button.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class TopPage extends StatefulWidget {
-  const TopPage({super.key, required this.title});
+  const TopPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -48,10 +53,24 @@ class _TopPageState extends State<TopPage> {
               backgroundColor: AppColors.primary,
               elevation: 2,
               onPressed: () {
-                Navigator.push(
+                final Set<Factory<OneSequenceGestureRecognizer>>
+                    gestureRecognizers = {
+                  Factory(() => EagerGestureRecognizer())
+                };
+
+                UniqueKey key = UniqueKey();
+
+                showAppBottomModalSheet(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const BottomNavigation(),
+                  title: "Qiita Auth",
+                  content: WebViewWidget(
+                    gestureRecognizers: gestureRecognizers,
+                    key: key,
+                    controller: WebViewController()
+                      ..loadRequest(
+                        Uri.parse(
+                            'https://qiita.com/api/v2/oauth/authorize?client_id=${dotenv.env['CLIENTID']}&scope=read_qiita'),
+                      ),
                   ),
                 );
               },
@@ -64,7 +83,14 @@ class _TopPageState extends State<TopPage> {
               backgroundColor: Colors.transparent,
               textColor: AppColors.white,
               elevation: 0,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BottomNavigation(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 64),
           ],
