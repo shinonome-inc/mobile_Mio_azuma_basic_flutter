@@ -22,13 +22,13 @@ class TagDetailListPage extends StatefulWidget {
 class _TagDetailListPageState extends State<TagDetailListPage> {
   List<Article> articles = [];
   late final ScrollController _scrollController;
-  bool isLoading = true;
+  bool isLoading = false;
   int currentPage = 1; // 現在のページ番号を追跡
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController(); // initState で ScrollController を初期化
+    _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
     fetchArticles();
   }
@@ -41,25 +41,28 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
+            _scrollController.position.maxScrollExtent &&
+        !isLoading) {
       currentPage++; // 次のページへ
       fetchArticles(isPagination: true);
     }
   }
 
   void fetchArticles({bool isPagination = false}) async {
-    // 初回の読み込みでなければ、ローディング状態を更新しない
-    if (isPagination || isLoading) {
-      List<Article> fetchArticles =
-          await QiitaRepository.fetchArticlesByTag(widget.tag.id, currentPage);
-      setState(() {
-        articles.addAll(fetchArticles);
-        // 初回読み込みの完了後はisLoadingをfalseに設定
-        if (!isPagination) {
-          isLoading = false;
-        }
-      });
-    }
+    if (isLoading && !isPagination) return;
+    setState(() {
+      isLoading = true;
+    });
+
+    List<Article> fetchedArticles =
+        await QiitaRepository.fetchArticlesByTag(widget.tag.id, currentPage);
+    setState(() {
+      if (currentPage == 1) {
+        articles.clear();
+      }
+      articles.addAll(fetchedArticles);
+      isLoading = false;
+    });
   }
 
   @override
@@ -72,7 +75,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
         showReturnIcon: true,
       ),
       body: Builder(builder: (context) {
-        if (isLoading) {
+        if (isLoading && articles.isEmpty) {
           return const Center(
             child: CupertinoActivityIndicator(),
           );
