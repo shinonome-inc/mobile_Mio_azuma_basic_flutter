@@ -19,6 +19,7 @@ class _FeedPageState extends State<FeedPage> {
   bool isLoading = false;
   int currentPage = 1;
   bool _isLoading = false;
+  String currentQuery = '';
 
   @override
   void initState() {
@@ -35,15 +36,16 @@ class _FeedPageState extends State<FeedPage> {
     super.dispose();
   }
 
-  void fetchArticles({String query = ''}) async {
+  void fetchArticles({String? query}) async {
     if (isLoading) return;
     setState(() {
       _isLoading = true;
       isLoading = true;
     });
 
-    List<Article> fetchedArticles =
-        await QiitaRepository.fetchQiitaItems(query: query, page: currentPage);
+    List<Article> fetchedArticles = await QiitaRepository.fetchQiitaItems(
+        query: query ?? currentQuery, page: currentPage);
+
     setState(() {
       if (currentPage == 1) {
         articles.clear();
@@ -58,11 +60,15 @@ class _FeedPageState extends State<FeedPage> {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !isLoading) {
-      // isLoading フラグをチェックして新しいリクエストを行わないようにする
-      // 最下部にスクロールした時に次のページを読み込む
-      currentPage++; // 次のページ番号を更新
-      fetchArticles();
+      currentPage++;
+      fetchArticles(query: currentQuery);
     }
+  }
+
+  void _searchArticles(String query) {
+    currentPage = 1;
+    currentQuery = query;
+    fetchArticles(query: query);
   }
 
   @override
@@ -73,10 +79,7 @@ class _FeedPageState extends State<FeedPage> {
         showSearchBar: true,
         showBottomDivider: true,
         searchController: _searchController,
-        onSearch: (query) {
-          currentPage = 1;
-          fetchArticles(query: query);
-        },
+        onSearch: _searchArticles,
       ),
       body: Builder(builder: (context) {
         if (_isLoading && currentPage == 1) {
