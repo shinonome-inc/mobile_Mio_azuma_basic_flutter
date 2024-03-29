@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/pages/feed_page.dart';
+import 'package:qiita_app/pages/my_page.dart';
 import 'package:qiita_app/pages/setting_page.dart';
 import 'package:qiita_app/pages/tag_page.dart';
 
@@ -17,9 +18,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   static const List<Widget> _widgetOptions = <Widget>[
     FeedPage(),
     TagPage(),
-    Text(
-      'Index 2: mypage',
-    ),
+    MyPage(),
     SettingsPage(),
   ];
 
