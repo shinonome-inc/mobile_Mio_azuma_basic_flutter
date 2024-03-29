@@ -33,6 +33,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/background_img.png
+    - .env
   fonts:
     - family: Pacifico
       fonts:
