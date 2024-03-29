@@ -12,6 +12,9 @@ jobs:
    - uses: subosito/flutter-action@v2.3.0
      with:
       flutter-version: '3.16.9'
+   - name: Create .env
+     run: echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> .env
+          && echo "CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" >> .env
    - name: Install dependencies and analyze project source
      run: |
        for d in */ ; do
