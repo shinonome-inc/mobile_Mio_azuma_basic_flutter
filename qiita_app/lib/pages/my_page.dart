@@ -41,7 +41,7 @@ class _MyPageState extends State<MyPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            padding: EdgeInsets.only(top: 20, right: 24, left: 24, bottom: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -64,6 +64,21 @@ class _MyPageState extends State<MyPage> {
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
+                SizedBox(height: 4),
+                Row(
+                  children: [
+                    Text('100フォロー'),
+                    Text('100フォロワー'),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context)=> (),)
+                    //     );
+                    //   },
+                    // ),
+                  ],
+                )
               ],
             ),
           ),
