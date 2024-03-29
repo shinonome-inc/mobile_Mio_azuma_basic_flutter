@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:qiita_app/constants/app_colors.dart';
+import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
 import 'package:qiita_app/widgets/bottom_navigation.dart';
 import 'package:qiita_app/widgets/rounded_edge_button.dart';
@@ -69,12 +70,14 @@ class _TopPageState extends State<TopPage> {
                     controller: WebViewController()
                       ..setNavigationDelegate(
                         NavigationDelegate(
-                          onNavigationRequest: (NavigationRequest request) {
+                          onNavigationRequest:
+                              (NavigationRequest request) async {
                             if (request.url.contains('code=')) {
                               Uri uri = Uri.parse(request.url);
                               String? code = uri.queryParameters['code'];
                               if (code != null) {
                                 print('Received code: $code');
+                                await QiitaRepository.requestAccessToken(code);
                               }
                               return NavigationDecision.prevent;
                             }
@@ -84,7 +87,7 @@ class _TopPageState extends State<TopPage> {
                       )
                       ..loadRequest(
                         Uri.parse(
-                            'https://qiita.com/api/v2/oauth/authorize?client_id=${dotenv.env['CLIENTID']}&scope=read_qiita'),
+                            'https://qiita.com/api/v2/oauth/authorize?client_id=${dotenv.env['CLIENT_ID']}&scope=read_qiita'),
                       ),
                   ),
                 );

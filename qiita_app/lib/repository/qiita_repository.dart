@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:js';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/models/tags.dart';
-import 'package:qiita_app/pages/feed_page.dart';
 
 import '../constants/urls.dart';
 
@@ -102,40 +99,34 @@ class QiitaRepository {
       return [];
     }
   }
-}
 
-Future<void> requestAccessToken(String code) async {
-  final String? clientId = dotenv.env['CLIENT_ID'];
-  final String? clientSecret = dotenv.env['CLIENT_SECRET'];
-  const String redirectUri = 'https://qiita.com/settings/applications?code';
-  const String accessTokenUrl = '${Urls.qiitaBaseUrl}/access_tokens';
+  static Future<void> requestAccessToken(String code) async {
+    final String? clientId = dotenv.env['CLIENT_ID'];
+    final String? clientSecret = dotenv.env['CLIENT_SECRET'];
+    const String redirectUri = 'https://qiita.com/settings/applications?code';
+    const String accessTokenUrl = '${Urls.qiitaBaseUrl}/access_tokens';
 
-  final response = await http.post(Uri.parse(accessTokenUrl), body: {
-    'client_id': clientId,
-    'client_secret': clientSecret,
-    'code': code,
-    'redirect_uri': redirectUri,
-  });
+    if (clientId == null || clientSecret == null) {
+      return;
+    }
 
-  if (response.statusCode == 200) {
-    // リクエストが成功した場合、レスポンスからアクセストークンを取得
-    final String accessToken = response.body;
-
-    final logger = Logger();
-
-// アクセストークンを保存または処理
-    logger.d('Access Token: $accessToken');
-
-    // トークンを保存し、Feed画面に遷移
-    // 例えばNavigatorを使用して画面遷移を行う
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FeedPage(accessToken: accessToken),
-      ),
+    final response = await http.post(
+      Uri.parse(accessTokenUrl),
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'code': code,
+        'redirect_uri': redirectUri,
+      },
     );
-  } else {
-    // リクエストが失敗した場合の処理
-    print('Failed to request access token: ${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      // リクエストが成功した場合、レスポンスからアクセストークンを取得
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      final String accessToken = jsonResponse['accessToken'] as String;
+    } else {
+      // リクエストが失敗した場合の処理
+      print('Failed to request access token: ${response.statusCode}');
+    }
   }
 }
