@@ -76,7 +76,9 @@ class _TopPageState extends State<TopPage> {
                               Uri uri = Uri.parse(request.url);
                               String? code = uri.queryParameters['code'];
                               if (code != null) {
-                                print('Received code: $code');
+                                if (kDebugMode) {
+                                  print('Received code: $code');
+                                }
                                 await QiitaRepository.requestAccessToken(code);
                               }
                               return NavigationDecision.prevent;

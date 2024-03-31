@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/models/tags.dart';
@@ -103,30 +104,45 @@ class QiitaRepository {
   static Future<void> requestAccessToken(String code) async {
     final String? clientId = dotenv.env['CLIENT_ID'];
     final String? clientSecret = dotenv.env['CLIENT_SECRET'];
-    const String redirectUri = 'https://qiita.com/settings/applications?code';
     const String accessTokenUrl = '${Urls.qiitaBaseUrl}/access_tokens';
 
     if (clientId == null || clientSecret == null) {
       return;
     }
 
-    final response = await http.post(
-      Uri.parse(accessTokenUrl),
-      body: {
-        'client_id': clientId,
-        'client_secret': clientSecret,
-        'code': code,
-        'redirect_uri': redirectUri,
-      },
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(accessTokenUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'client_id': clientId,
+          'client_secret': clientSecret,
+          'code': code,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      // リクエストが成功した場合、レスポンスからアクセストークンを取得
-      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      final String accessToken = jsonResponse['accessToken'] as String;
-    } else {
-      // リクエストが失敗した場合の処理
-      print('Failed to request access token: ${response.statusCode}');
+      if (response.statusCode == 201) {
+        // リクエストが成功した場合、レスポンスからアクセストークンを取得
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        final String accessToken = jsonResponse['token'].toString();
+
+        // FlutterSecureStorageのインスタンスを作成
+        final storage = FlutterSecureStorage();
+
+        // アクセストークンを保存
+        await storage.write(key: 'accessToken', value: accessToken);
+      } else {
+        // リクエストが失敗した場合のエラーハンドリング
+        final errorMessage =
+            'Failed to request access token: ${response.statusCode}';
+        throw Exception(errorMessage);
+      }
+    } catch (e) {
+      // 例外が発生した場合のエラーハンドリング
+      final errorMessage = 'Failed to request access token: $e';
+      throw Exception(errorMessage);
     }
   }
 }
