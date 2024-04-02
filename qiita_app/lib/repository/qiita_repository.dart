@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/models/tags.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/urls.dart';
 
@@ -128,11 +128,9 @@ class QiitaRepository {
         final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         final String accessToken = jsonResponse['token'].toString();
 
-        // FlutterSecureStorageのインスタンスを作成
-        final storage = FlutterSecureStorage();
-
-        // アクセストークンを保存
-        await storage.write(key: 'accessToken', value: accessToken);
+        // SharedPreferencesを使用してアクセストークンを保存
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('accessToken', accessToken);
       } else {
         // リクエストが失敗した場合のエラーハンドリング
         final errorMessage =
