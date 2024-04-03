@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:qiita_app/models/article.dart';
@@ -131,6 +131,9 @@ class QiitaRepository {
         // SharedPreferencesを使用してアクセストークンを保存
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', accessToken);
+        if (kDebugMode) {
+          print(accessToken);
+        }
       } else {
         // リクエストが失敗した場合のエラーハンドリング
         final errorMessage =
