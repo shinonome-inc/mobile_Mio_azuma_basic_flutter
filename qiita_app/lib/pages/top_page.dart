@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:qiita_app/constants/app_colors.dart';
+import 'package:qiita_app/pages/feed_page.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
 import 'package:qiita_app/widgets/bottom_navigation.dart';
@@ -19,102 +21,126 @@ class TopPage extends StatefulWidget {
 }
 
 class _TopPageState extends State<TopPage> {
+  bool isLoading = false; // ローディング状態を管理
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/background_img.png"),
-            fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/background_img.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-        child: Column(
-          children: [
-            const Spacer(),
-            const Text(
-              'Qiita Feed App',
-              style: TextStyle(
-                fontFamily: 'Pacifico',
-                fontSize: 36,
-                color: Colors.white,
+          isLoading // ローディング中ならばローディングインジケータを表示
+              ? const Center(
+                  child: CupertinoActivityIndicator(),
+                )
+              : const SizedBox(),
+          Column(
+            children: [
+              const Spacer(),
+              const Text(
+                'Qiita Feed App',
+                style: TextStyle(
+                  fontFamily: 'Pacifico',
+                  fontSize: 36,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            const Text(
-              'Play Ground',
-              style: TextStyle(
-                fontFamily: 'Noto Sans JP',
-                fontSize: 14,
-                color: AppColors.white,
+              const Text(
+                'Play Ground',
+                style: TextStyle(
+                  fontFamily: 'Noto Sans JP',
+                  fontSize: 14,
+                  color: AppColors.white,
+                ),
               ),
-            ),
-            const Spacer(),
-            RoundedEdgeButton(
-              text: "ログイン",
-              backgroundColor: AppColors.primary,
-              elevation: 2,
-              onPressed: () {
-                final Set<Factory<OneSequenceGestureRecognizer>>
-                    gestureRecognizers = {
-                  Factory(() => EagerGestureRecognizer())
-                };
+              const Spacer(),
+              RoundedEdgeButton(
+                text: "ログイン",
+                backgroundColor: AppColors.primary,
+                elevation: 2,
+                onPressed: () async {
+                  final Set<Factory<OneSequenceGestureRecognizer>>
+                      gestureRecognizers = {
+                    Factory(() => EagerGestureRecognizer())
+                  };
+                  UniqueKey key = UniqueKey();
 
-                UniqueKey key = UniqueKey();
-
-                showAppBottomModalSheet(
-                  context,
-                  title: "Qiita Auth",
-                  content: WebViewWidget(
-                    gestureRecognizers: gestureRecognizers,
-                    key: key,
-                    controller: WebViewController()
-                      ..setNavigationDelegate(
-                        NavigationDelegate(
-                          onNavigationRequest:
-                              (NavigationRequest request) async {
-                            if (request.url.contains('code=')) {
-                              Uri uri = Uri.parse(request.url);
-                              String? code = uri.queryParameters['code'];
-                              if (code != null) {
-                                if (kDebugMode) {
-                                  print('Received code: $code');
+                  showAppBottomModalSheet(
+                    context,
+                    title: "Qiita Auth",
+                    content: WebViewWidget(
+                      gestureRecognizers: gestureRecognizers,
+                      key: key,
+                      controller: WebViewController()
+                        ..setNavigationDelegate(
+                          NavigationDelegate(
+                            onNavigationRequest:
+                                (NavigationRequest request) async {
+                              if (request.url.contains('code=')) {
+                                Uri uri = Uri.parse(request.url);
+                                String? code = uri.queryParameters['code'];
+                                if (code != null) {
+                                  if (kDebugMode) {
+                                    print('Received code: $code');
+                                  }
+                                  await QiitaRepository.requestAccessToken(
+                                      code);
+                                  if (!context.mounted) {
+                                    return Future.value(
+                                        NavigationDecision.prevent);
+                                  }
+                                  setState(() {
+                                    isLoading = true; // ローディング開始
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const FeedPage(),
+                                    ),
+                                  );
                                 }
-                                await QiitaRepository.requestAccessToken(code);
+                                return NavigationDecision.prevent;
                               }
-                              return NavigationDecision.prevent;
-                            }
-                            return NavigationDecision.navigate;
-                          },
+                              return NavigationDecision.navigate;
+                            },
+                          ),
+                        )
+                        ..loadRequest(
+                          Uri.parse(
+                              'https://qiita.com/api/v2/oauth/authorize?client_id=${dotenv.env['CLIENT_ID']}&scope=read_qiita'),
                         ),
-                      )
-                      ..loadRequest(
-                        Uri.parse(
-                            'https://qiita.com/api/v2/oauth/authorize?client_id=${dotenv.env['CLIENT_ID']}&scope=read_qiita'),
-                      ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            RoundedEdgeButton(
-              text: "ログインせずに利用する",
-              backgroundColor: Colors.transparent,
-              textColor: AppColors.white,
-              elevation: 0,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BottomNavigation(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 64),
-          ],
-        ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              RoundedEdgeButton(
+                text: "ログインせずに利用する",
+                backgroundColor: Colors.transparent,
+                textColor: AppColors.white,
+                elevation: 0,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BottomNavigation(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 64),
+            ],
+          ),
+        ],
       ),
     );
   }
