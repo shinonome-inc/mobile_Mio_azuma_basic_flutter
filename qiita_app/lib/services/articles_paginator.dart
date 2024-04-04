@@ -9,8 +9,10 @@ class ArticlesPaginator {
   final Function fetchArticlesCallback;
   final VoidCallback onDataUpdated; // 追加: データ更新時のコールバック
 
-  ArticlesPaginator(
-      {required this.fetchArticlesCallback, required this.onDataUpdated}) {
+  ArticlesPaginator({
+    required this.fetchArticlesCallback,
+    required this.onDataUpdated,
+  }) {
     scrollController.addListener(_scrollListener);
   }
   void dispose() {
