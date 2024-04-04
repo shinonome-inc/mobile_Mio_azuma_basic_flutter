@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -36,11 +38,6 @@ class _TopPageState extends State<TopPage> {
               ),
             ),
           ),
-          isLoading // ローディング中ならばローディングインジケータを表示
-              ? const Center(
-                  child: CupertinoActivityIndicator(),
-                )
-              : const SizedBox(),
           Column(
             children: [
               const Spacer(),
@@ -92,13 +89,14 @@ class _TopPageState extends State<TopPage> {
                                   }
                                   await QiitaRepository.requestAccessToken(
                                       code);
+                                  setState(() {
+                                    isLoading = true; // ローディング開始
+                                  });
                                   if (!context.mounted) {
                                     return Future.value(
                                         NavigationDecision.prevent);
                                   }
-                                  setState(() {
-                                    isLoading = true; // ローディング開始
-                                  });
+                                  Navigator.pop(context);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -140,7 +138,23 @@ class _TopPageState extends State<TopPage> {
               const SizedBox(height: 64),
             ],
           ),
+          // isLoadingがtrueの場合、ローディング画面を表示します
+          if (isLoading) const LoginLoading(),
         ],
+      ),
+    );
+  }
+}
+
+class LoginLoading extends StatelessWidget {
+  const LoginLoading({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BackdropFilter(
+      filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+      child: const Center(
+        child: CupertinoActivityIndicator(),
       ),
     );
   }
