@@ -27,4 +27,9 @@ class AppTextStyles {
     color: AppColors.black,
     fontWeight: FontWeight.w100,
   );
+  static const TextStyle h1ThinSecondary = TextStyle(
+    fontSize: 17,
+    color: AppColors.secondary,
+    fontWeight: FontWeight.w400,
+  );
 }
