@@ -1,4 +1,5 @@
 import 'dart:convert';
+// import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -96,6 +97,24 @@ class QiitaRepository {
       debugPrint(
           'Failed to fetch Qiita tags. Status code: ${response.statusCode}');
       return [];
+    }
+  }
+
+  static Future<List<Article>> fetchArticlesByTag(
+      String tagId, int page) async {
+    final url = Uri.parse(
+        '${Urls.qiitaBaseUrl}/tags/$tagId/items?page=$page&per_page=20');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = jsonDecode(response.body);
+        return jsonResponse.map((data) => Article.fromJson(data)).toList();
+      } else {
+        throw Exception(_exceptionMessage(response.statusCode));
+      }
+    } catch (e) {
+      throw Exception('Failed to load articles for tag  $e');
     }
   }
 }
