@@ -77,7 +77,7 @@ class AppBottomModalHeader extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: Text(
         title,
-        style: AppTextStyles.apptitle, // 新しく定義したスタイルを使用
+        style: AppTextStyles.apptitle,
       ),
     );
   }
