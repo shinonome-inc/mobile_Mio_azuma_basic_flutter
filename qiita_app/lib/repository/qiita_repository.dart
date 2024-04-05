@@ -122,8 +122,8 @@ class QiitaRepository {
   }
 
   static Future<void> requestAccessToken(String code) async {
-    final String clientId = dotenv.env['CLIENT_ID'] ?? '';
-    final String clientSecret = dotenv.env['CLIENT_SECRET'] ?? '';
+    final String clientId = dotenv.env['CLIENT_ID']!;
+    final String clientSecret = dotenv.env['CLIENT_SECRET']!;
     const String accessTokenUrl = '${Urls.qiitaBaseUrl}/access_tokens';
 
     final response = await http.post(
