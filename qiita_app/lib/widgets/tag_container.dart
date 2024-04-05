@@ -1,7 +1,4 @@
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/pages/tag_detail_list_page.dart';
 
