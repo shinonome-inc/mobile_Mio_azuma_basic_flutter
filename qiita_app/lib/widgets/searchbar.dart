@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
+import 'package:qiita_app/constants/app_text_style.dart';
 
 class SearchBarWithIcon extends StatefulWidget {
   final TextEditingController searchController;
@@ -49,9 +50,7 @@ class _SearchBarWithIconState extends State<SearchBarWithIcon> {
       child: TextField(
         decoration: InputDecoration(
           hintText: 'Search',
-          hintStyle: const TextStyle(
-            fontSize: 17,
-          ),
+          hintStyle: AppTextStyles.h1ThinSecondary,
           fillColor: AppColors.gray,
           filled: true,
           prefixIcon: const Padding(

@@ -59,7 +59,7 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 11),
+                  const SizedBox(height: 10),
                   Text(
                     title,
                     style: style ?? AppTextStyles.apptitle,
