@@ -23,6 +23,14 @@ class TopPage extends StatefulWidget {
 
 class _TopPageState extends State<TopPage> {
   bool isLoading = false; // ローディング状態を管理
+  Widget loginLoading() {
+    return BackdropFilter(
+      filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+      child: const Center(
+        child: CupertinoActivityIndicator(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,14 +149,4 @@ class _TopPageState extends State<TopPage> {
       ),
     );
   }
-}
-
-// ローディング画面の関数
-Widget loginLoading() {
-  return BackdropFilter(
-    filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-    child: const Center(
-      child: CupertinoActivityIndicator(),
-    ),
-  );
 }
