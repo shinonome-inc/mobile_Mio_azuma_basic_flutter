@@ -6,7 +6,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:qiita_app/constants/app_colors.dart';
-import 'package:qiita_app/pages/feed_page.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
 import 'package:qiita_app/widgets/bottom_navigation.dart';
@@ -67,14 +66,12 @@ class _TopPageState extends State<TopPage> {
                       gestureRecognizers = {
                     Factory(() => EagerGestureRecognizer())
                   };
-                  UniqueKey key = UniqueKey();
 
                   showAppBottomModalSheet(
                     context,
                     title: "Qiita Auth",
                     content: WebViewWidget(
                       gestureRecognizers: gestureRecognizers,
-                      key: key,
                       controller: WebViewController()
                         ..setNavigationDelegate(
                           NavigationDelegate(
@@ -93,14 +90,14 @@ class _TopPageState extends State<TopPage> {
                                     isLoading = true; // ローディング開始
                                   });
                                   if (!context.mounted) {
-                                    return Future.value(
-                                        NavigationDecision.prevent);
+                                    return NavigationDecision.prevent;
                                   }
                                   Navigator.pop(context);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const FeedPage(),
+                                      builder: (context) =>
+                                          const BottomNavigation(),
                                     ),
                                   );
                                 }
@@ -139,23 +136,19 @@ class _TopPageState extends State<TopPage> {
             ],
           ),
           // isLoadingがtrueの場合、ローディング画面を表示します
-          if (isLoading) const LoginLoading(),
+          if (isLoading) loginLoading(),
         ],
       ),
     );
   }
 }
 
-class LoginLoading extends StatelessWidget {
-  const LoginLoading({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: const Center(
-        child: CupertinoActivityIndicator(),
-      ),
-    );
-  }
+// ローディング画面の関数
+Widget loginLoading() {
+  return BackdropFilter(
+    filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+    child: const Center(
+      child: CupertinoActivityIndicator(),
+    ),
+  );
 }

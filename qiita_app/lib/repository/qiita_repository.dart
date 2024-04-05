@@ -102,47 +102,37 @@ class QiitaRepository {
   }
 
   static Future<void> requestAccessToken(String code) async {
-    final String? clientId = dotenv.env['CLIENT_ID'];
-    final String? clientSecret = dotenv.env['CLIENT_SECRET'];
+    final String clientId = dotenv.env['CLIENT_ID'] ?? '';
+    final String clientSecret = dotenv.env['CLIENT_SECRET'] ?? '';
     const String accessTokenUrl = '${Urls.qiitaBaseUrl}/access_tokens';
 
-    if (clientId == null || clientSecret == null) {
-      return;
-    }
+    final response = await http.post(
+      Uri.parse(accessTokenUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'code': code,
+      }),
+    );
 
-    try {
-      final response = await http.post(
-        Uri.parse(accessTokenUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'client_id': clientId,
-          'client_secret': clientSecret,
-          'code': code,
-        }),
-      );
+    if (response.statusCode == 201) {
+      // リクエストが成功した場合、レスポンスからアクセストークンを取得
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      final String accessToken = jsonResponse['token'].toString();
 
-      if (response.statusCode == 201) {
-        // リクエストが成功した場合、レスポンスからアクセストークンを取得
-        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-        final String accessToken = jsonResponse['token'].toString();
-
-        // SharedPreferencesを使用してアクセストークンを保存
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('accessToken', accessToken);
-        if (kDebugMode) {
-          print(accessToken);
-        }
-      } else {
-        // リクエストが失敗した場合のエラーハンドリング
-        final errorMessage =
-            'Failed to request access token: ${response.statusCode}';
-        throw Exception(errorMessage);
+      // SharedPreferencesを使用してアクセストークンを保存
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('accessToken', accessToken);
+      if (kDebugMode) {
+        print(accessToken);
       }
-    } catch (e) {
-      // 例外が発生した場合のエラーハンドリング
-      final errorMessage = 'Failed to request access token: $e';
+    } else {
+      // リクエストが失敗した場合のエラーハンドリング
+      final errorMessage =
+          'Failed to request access token: ${response.statusCode}';
       throw Exception(errorMessage);
     }
   }
