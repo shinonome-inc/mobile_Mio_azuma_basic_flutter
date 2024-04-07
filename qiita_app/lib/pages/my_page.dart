@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/models/article.dart';
+import 'package:qiita_app/models/user.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
 import 'package:qiita_app/widgets/article_container.dart';
 import 'package:qiita_app/widgets/section_divider.dart';
+import 'package:qiita_app/widgets/user_info_container.dart';
 
 class MyPage extends StatefulWidget {
-  const MyPage({Key? key}) : super(key: key);
+  const MyPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<MyPage> createState() => _MyPageState();
@@ -15,19 +19,30 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   List<Article> articles = [];
+  User? loggedInUser;
 
   @override
   void initState() {
     super.initState();
-    fetchArticles();
+    fetchLoggedInUserInfo();
   }
 
-  Future<void> fetchArticles() async {
-    List<Article> fetchedArticles =
-        await QiitaRepository.fetchQiitaItems(query: 'flutter');
-    setState(() {
-      articles = fetchedArticles;
-    });
+  Future<void> fetchLoggedInUserInfo() async {
+    debugPrint('Starting to fetch logged in user info...');
+
+    try {
+      User userInfo = await QiitaRepository.fetchAuthenticatedUserInfo();
+      debugPrint('Logged in user info fetched successfully.');
+
+      List<Article> userArticles = await QiitaRepository.fetchUserArticles(userInfo.id);
+
+      setState(() {
+        loggedInUser = userInfo;
+        articles = userArticles;  // ユーザーの記事リストを更新
+      });
+    } catch (e) {
+      debugPrint('Failed to fetch user info: $e');
+    }
   }
 
   @override
@@ -38,11 +53,13 @@ class _MyPageState extends State<MyPage> {
         showBottomDivider: true,
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 20, right: 24, left: 24, bottom: 8),
-            child: Column(
+          if (loggedInUser != null) ...[
+            UserInfoContainer(
+              user: loggedInUser!,
+            )
+          ] else ...[
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
@@ -65,23 +82,11 @@ class _MyPageState extends State<MyPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text('100フォロー'),
-                    Text('100フォロワー'),
-                    // InkWell(
-                    //   onTap: () {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(builder: (context)=> (),)
-                    //     );
-                    //   },
-                    // ),
-                  ],
-                )
+                Text('100フォロー'),
+                Text('100フォロワー'),
               ],
             ),
-          ),
+          ],
           const SectionDivider(text: '投稿記事'),
           Expanded(
             child: ListView.builder(
