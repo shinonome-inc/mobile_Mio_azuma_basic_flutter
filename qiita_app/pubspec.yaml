@@ -21,6 +21,7 @@ dependencies:
   webview_flutter: ^4.7.0
   flutter_dotenv: ^5.1.0
   shared_preferences: ^2.2.2
+  connectivity_plus: ^6.0.1
 
 
 dev_dependencies:
@@ -32,6 +33,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/background_img.png
+    - assets/Network.png
     - .env
   fonts:
     - family: Pacifico
