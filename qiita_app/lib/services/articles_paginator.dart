@@ -7,12 +7,20 @@ class ArticlesPaginator {
   bool isLoading = false;
   int currentPage = 1;
   final Function fetchArticlesCallback;
-  final VoidCallback onDataUpdated; // 追加: データ更新時のコールバック
+  final VoidCallback onDataUpdated;
+  bool hasError = false;
+  late VoidCallback retry;
 
-  ArticlesPaginator(
-      {required this.fetchArticlesCallback, required this.onDataUpdated}) {
+  ArticlesPaginator({
+    required this.fetchArticlesCallback,
+    required this.onDataUpdated,
+  }) {
     scrollController.addListener(_scrollListener);
+    retry = () {
+      fetchArticles(isPagination: true);
+    };
   }
+
   void dispose() {
     scrollController.dispose();
   }
@@ -30,13 +38,18 @@ class ArticlesPaginator {
     if (isLoading && !isPagination) return;
     isLoading = true;
 
-    List<Article> fetchedArticles = await fetchArticlesCallback(currentPage);
-    if (currentPage == 1) {
-      articles.clear();
+    try {
+      List<Article> fetchedArticles = await fetchArticlesCallback(currentPage);
+      if (currentPage == 1) {
+        articles.clear();
+      }
+      articles.addAll(fetchedArticles);
+      hasError = false;
+    } catch (e) {
+      hasError = true;
+    } finally {
+      isLoading = false;
+      onDataUpdated();
     }
-    articles.addAll(fetchedArticles);
-
-    isLoading = false;
-    onDataUpdated(); // データ更新後にコールバックを呼び出す
   }
 }
