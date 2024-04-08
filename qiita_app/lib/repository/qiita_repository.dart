@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 // import 'dart:html';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/models/tags.dart';
+import 'package:qiita_app/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/urls.dart';
@@ -156,4 +155,55 @@ class QiitaRepository {
       throw Exception(errorMessage);
     }
   }
+
+  static Future<User> fetchAuthenticatedUserInfo() async {
+    final accessToken = await _getAccessToken(); // アクセストークンを取得するメソッド
+    debugPrint('Fetched access token: $accessToken'); // ログ出力でトークン確認
+
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/authenticated_user');
+    debugPrint('Requesting authenticated user info from: $url'); // リクエストURLのログ
+
+    final response =
+        await http.get(url, headers: {'Authorization': 'Bearer $accessToken'});
+    debugPrint('Received response: ${response.body}'); // レスポンス内容のログ
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      return User.fromJson(jsonResponse);
+    } else {
+      debugPrint('Error fetching user info: ${response.statusCode}');
+      throw Exception(_exceptionMessage(response.statusCode));
+    }
+  }
+
+  static Future<String> _getAccessToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? accessToken = prefs.getString('accessToken');
+
+    // アクセストークンの存在をログで確認
+    debugPrint('Access token from SharedPreferences: $accessToken');
+
+    if (accessToken == null || accessToken.isEmpty) {
+      debugPrint('Access token is null or empty');
+      throw Exception('No access token found');
+    }
+    return accessToken;
+  }
+
+  static Future<List<Article>> fetchUserArticles(String userId) async {
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/items');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = jsonDecode(response.body);
+        return jsonResponse.map((data) => Article.fromJson(data)).toList();
+      } else {
+        throw Exception(_exceptionMessage(response.statusCode));
+      }
+    } catch (e) {
+      throw Exception('Failed to load user articles: $e');
+    }
+  }
 }
+
