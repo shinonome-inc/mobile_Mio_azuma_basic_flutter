@@ -43,7 +43,7 @@ class _TagPageState extends State<TagPage> {
         future: _tagsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError ||
               snapshot.data == null ||
               snapshot.data!.isEmpty) {
