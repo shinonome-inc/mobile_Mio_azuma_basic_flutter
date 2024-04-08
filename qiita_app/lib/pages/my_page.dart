@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/models/user.dart';
-import 'package:qiita_app/pages/my_page_notlogin.dart';
+// import 'package:qiita_app/pages/my_page_notlogin.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
 import 'package:qiita_app/widgets/article_container.dart';
