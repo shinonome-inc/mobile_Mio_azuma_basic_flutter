@@ -64,6 +64,7 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
                   itemBuilder: (context, index) {
                     return ArticleContainer(
                       article: articlesPaginator.articles[index],
+                      showAvatar: true,
                     );
                   },
                 ),

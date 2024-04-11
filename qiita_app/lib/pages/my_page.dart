@@ -72,7 +72,10 @@ class _MyPageState extends State<MyPage> {
               child: ListView.builder(
                 itemCount: articles.length,
                 itemBuilder: (context, index) {
-                  return ArticleContainer(article: articles[index]);
+                  return ArticleContainer(
+                    article: articles[index],
+                    showAvatar: false,
+                    );
                 },
               ),
             ),

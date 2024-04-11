@@ -76,6 +76,7 @@ class _FeedPageState extends State<FeedPage> {
             itemBuilder: (context, index) {
               return ArticleContainer(
                 article: articlesPaginator.articles[index],
+                showAvatar: true,
               );
             },
           );
