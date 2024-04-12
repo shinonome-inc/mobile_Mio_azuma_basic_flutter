@@ -205,4 +205,9 @@ class QiitaRepository {
       throw Exception('Failed to load user articles: $e');
     }
   }
+
+  static Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken'); // アクセストークンを削除
+  }
 }
