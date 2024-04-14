@@ -18,11 +18,13 @@ class UserInfoContainer extends StatefulWidget {
 class _UserInfoContainerState extends State<UserInfoContainer> {
   @override
   Widget build(BuildContext context) {
+    debugPrint('ユーザー名: ${widget.user.name}');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 12, right: 24, left: 24, bottom: 8),
+          padding:
+              const EdgeInsets.only(top: 12, right: 24, left: 24, bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -39,13 +41,15 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                 '@${widget.user.id}',
                 style: AppTextStyles.h3BasicSecondary,
               ),
-              const SizedBox(height: 12),
-              Text(
-                widget.user.description,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 12),
+              if (widget.user.description.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  widget.user.description,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 12),
+              ],
               Row(
                 children: [
                   RichText(
