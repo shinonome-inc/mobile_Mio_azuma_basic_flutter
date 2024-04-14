@@ -46,8 +46,10 @@ class _MyPageState extends State<MyPage> {
       debugPrint('Failed to fetch user info: $e');
       if (mounted) {
         setState(() {
+          loggedInUser = null;
           isLoading = false; // エラー時もローディング終了
         });
+        throw Exception('Failed to load Qiita items: $e');
       }
     }
   }
@@ -57,29 +59,29 @@ class _MyPageState extends State<MyPage> {
     if (isLoading) {
       return const Scaffold(
         appBar: AppTitle(title: 'MyPage', showBottomDivider: true),
-        body: Center(child: CircularProgressIndicator()), // ローディングインジケーターを表示
-      );
-    } else {
-      return Scaffold(
-        appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
-        body: Column(
-          children: [
-            UserInfoContainer(user: loggedInUser!),
-            const SectionDivider(text: '投稿記事'),
-            Expanded(
-              child: ListView.builder(
-                itemCount: articles.length,
-                itemBuilder: (context, index) {
-                  return ArticleContainer(
-                    article: articles[index],
-                    showAvatar: false,
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
+
+    return Scaffold(
+      appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
+      body: Column(
+        children: [
+          if (loggedInUser != null) UserInfoContainer(user: loggedInUser!),
+          const SectionDivider(text: '投稿記事'),
+          Expanded(
+            child: ListView.builder(
+              itemCount: articles.length,
+              itemBuilder: (context, index) {
+                return ArticleContainer(
+                  article: articles[index],
+                  showAvatar: false,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
