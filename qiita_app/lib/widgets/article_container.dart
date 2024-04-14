@@ -11,9 +11,11 @@ class ArticleContainer extends StatelessWidget {
   const ArticleContainer({
     Key? key,
     required this.article,
+    required this.showAvatar,
   }) : super(key: key);
 
   final Article article;
+  final bool showAvatar;
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +47,16 @@ class ArticleContainer extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(article.userIconUrl),
-                  radius: 19,
-                ),
-                const SizedBox(width: 8),
+                if (showAvatar) // showAvatarがtrueの場合のみCircleAvatarを表示
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(article.userIconUrl),
+                    radius: 19,
+                  ),
+                if (showAvatar) // アバターを表示する場合にはスペースも必要
+                  const SizedBox(width: 8),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
                         article.title,
@@ -75,17 +79,16 @@ class ArticleContainer extends StatelessWidget {
             ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(
-                      left: 16 +
-                          19 * 2 +
-                          8), // CircleAvatarの直径と左のPadding、そして間のスペースを加算
-                  child: const Divider(
-                    thickness: 0.5,
-                    color: AppColors.secondary,
-                  ),
+              SizedBox(
+                width: showAvatar ? 16 + 19 * 2 + 8 : 16,
+              ),
+              const Expanded(
+                child: Divider(
+                  height: 0,
+                  thickness: 0.5,
+                  color: AppColors.secondary,
                 ),
               ),
             ],
