@@ -41,12 +41,15 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                 style: AppTextStyles.h3BasicSecondary,
               ),
               const SizedBox(height: 12),
-              Text(
-                widget.user.description,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 12),
+              if (widget.user.description.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  widget.user.description,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 12),
+              ],
               Row(
                 children: [
                   InkWell(
@@ -68,7 +71,9 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  const FollowFollowingListPage(listType: 'following',),
+                          builder: (context) => const FollowFollowingListPage(
+                            listType: 'following',
+                          ),
                         ),
                       );
                     },
@@ -93,7 +98,9 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const FollowFollowingListPage(listType: 'followers',),
+                          builder: (context) => const FollowFollowingListPage(
+                            listType: 'followers',
+                          ),
                         ),
                       );
                     },
@@ -107,5 +114,3 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
     );
   }
 }
-
-

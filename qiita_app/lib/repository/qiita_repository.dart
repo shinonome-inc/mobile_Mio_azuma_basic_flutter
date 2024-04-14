@@ -1,5 +1,4 @@
 import 'dart:convert';
-// import 'dart:html';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -226,21 +225,21 @@ class QiitaRepository {
   }
 
   static Future<List<User>> fetchFollowersUsers(String userId) async {
-  final accessToken = await _getAccessToken();
-  final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followers');
-  try {
-    final response = await http.get(url, headers: {
-      'Authorization': 'Bearer $accessToken',
-    });
+    final accessToken = await _getAccessToken();
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followers');
+    try {
+      final response = await http.get(url, headers: {
+        'Authorization': 'Bearer $accessToken',
+      });
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonResponse = jsonDecode(response.body);
-      return jsonResponse.map((data) => User.fromJson(data)).toList();
-    } else {
-      throw Exception(_exceptionMessage(response.statusCode));
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = jsonDecode(response.body);
+        return jsonResponse.map((data) => User.fromJson(data)).toList();
+      } else {
+        throw Exception(_exceptionMessage(response.statusCode));
+      }
+    } catch (e) {
+      throw Exception('Failed to load followers: $e');
     }
-  } catch (e) {
-    throw Exception('Failed to load followers: $e');
   }
-}
 }
