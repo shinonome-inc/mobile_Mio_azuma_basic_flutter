@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/models/user.dart';
-// import 'package:qiita_app/pages/my_page_notlogin.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
 import 'package:qiita_app/widgets/article_container.dart';
@@ -47,8 +46,10 @@ class _MyPageState extends State<MyPage> {
       debugPrint('Failed to fetch user info: $e');
       if (mounted) {
         setState(() {
+          loggedInUser = null;
           isLoading = false; // エラー時もローディング終了
         });
+        throw Exception('Failed to load Qiita items: $e');
       }
     }
   }
@@ -58,31 +59,29 @@ class _MyPageState extends State<MyPage> {
     if (isLoading) {
       return const Scaffold(
         appBar: AppTitle(title: 'MyPage', showBottomDivider: true),
-        body: Center(child: CircularProgressIndicator()), // ローディングインジケーターを表示
-      );
-      // } else if (loggedInUser == null) {
-      //   return const MyPageNotLogin();
-    } else {
-      return Scaffold(
-        appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
-        body: Column(
-          children: [
-            UserInfoContainer(user: loggedInUser!),
-            const SectionDivider(text: '投稿記事'),
-            Expanded(
-              child: ListView.builder(
-                itemCount: articles.length,
-                itemBuilder: (context, index) {
-                  return ArticleContainer(
-                    article: articles[index],
-                    showAvatar: false,
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
+
+    return Scaffold(
+      appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
+      body: Column(
+        children: [
+          if (loggedInUser != null) UserInfoContainer(user: loggedInUser!),
+          const SectionDivider(text: '投稿記事'),
+          Expanded(
+            child: ListView.builder(
+              itemCount: articles.length,
+              itemBuilder: (context, index) {
+                return ArticleContainer(
+                  article: articles[index],
+                  showAvatar: false,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
