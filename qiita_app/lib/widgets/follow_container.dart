@@ -57,12 +57,14 @@ class FollowContainer extends StatelessWidget {
                   style: AppTextStyles.h3BasicBlack,
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  user.description,
-                  style: AppTextStyles.h3BasicSecondary,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                if (user.description.isNotEmpty) ...[
+                  Text(
+                    user.description,
+                    style: AppTextStyles.h3BasicSecondary,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ],
             ),
           ],
