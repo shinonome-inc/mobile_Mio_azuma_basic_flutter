@@ -22,7 +22,6 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
   bool isLoading = false;
   int currentPage = 1;
   late ScrollController scrollController;
-  // ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
