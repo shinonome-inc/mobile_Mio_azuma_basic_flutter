@@ -24,7 +24,6 @@ class FollowContainer extends StatelessWidget {
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 CircleAvatar(
                   backgroundImage: NetworkImage(user.profileImageUrl),
@@ -32,7 +31,6 @@ class FollowContainer extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(

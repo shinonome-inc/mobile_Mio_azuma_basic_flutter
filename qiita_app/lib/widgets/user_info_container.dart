@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/models/user.dart';
-import 'package:qiita_app/pages/follow_following_list_page.dart';
+import 'package:qiita_app/pages/follower_following_list_page.dart';
 
 class UserInfoContainer extends StatefulWidget {
   final User user;
@@ -71,7 +71,7 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const FollowFollowingListPage(
+                          builder: (context) => const FollowerFollowingListPage(
                             listType: 'following',
                           ),
                         ),
@@ -98,7 +98,7 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const FollowFollowingListPage(
+                          builder: (context) => const FollowerFollowingListPage(
                             listType: 'followers',
                           ),
                         ),
