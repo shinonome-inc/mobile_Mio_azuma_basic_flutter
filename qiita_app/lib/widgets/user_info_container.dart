@@ -53,6 +53,19 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
               Row(
                 children: [
                   InkWell(
+                    onTap: widget.user.followeesCount > 0
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const FollowerFollowingListPage(
+                                  listType: 'following',
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
                     child: RichText(
                       text: TextSpan(
                         children: [
@@ -67,19 +80,22 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                         ],
                       ),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FollowerFollowingListPage(
-                            listType: 'following',
-                          ),
-                        ),
-                      );
-                    },
                   ),
                   const SizedBox(width: 4),
                   InkWell(
+                    onTap: widget.user.followersCount > 0
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const FollowerFollowingListPage(
+                                  listType: 'followers',
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
                     child: RichText(
                       text: TextSpan(
                         children: [
@@ -94,16 +110,6 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                         ],
                       ),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FollowerFollowingListPage(
-                            listType: 'followers',
-                          ),
-                        ),
-                      );
-                    },
                   )
                 ],
               )
