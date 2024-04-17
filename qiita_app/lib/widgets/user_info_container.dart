@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/models/user.dart';
-// import 'package:qiita_app/pages/follow_list_page.dart';
+import 'package:qiita_app/pages/follower_following_list_page.dart';
 
 class UserInfoContainer extends StatefulWidget {
   final User user;
@@ -18,7 +18,6 @@ class UserInfoContainer extends StatefulWidget {
 class _UserInfoContainerState extends State<UserInfoContainer> {
   @override
   Widget build(BuildContext context) {
-    debugPrint('ユーザー名: ${widget.user.name}');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -41,6 +40,7 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                 '@${widget.user.id}',
                 style: AppTextStyles.h3BasicSecondary,
               ),
+              const SizedBox(height: 12),
               if (widget.user.description.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Text(
@@ -52,35 +52,65 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
               ],
               Row(
                 children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '${widget.user.followeesCount} ',
-                          style: AppTextStyles.h3BasicBlack,
-                        ),
-                        const TextSpan(
-                          text: 'フォロー中',
-                          style: AppTextStyles.h3BasicSecondary,
-                        ),
-                      ],
+                  InkWell(
+                    onTap: widget.user.followeesCount > 0
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const FollowerFollowingListPage(
+                                  listType: 'following',
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${widget.user.followeesCount} ',
+                            style: AppTextStyles.h3BasicBlack,
+                          ),
+                          const TextSpan(
+                            text: 'フォロー中',
+                            style: AppTextStyles.h3BasicSecondary,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 8), // 間隔を追加
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '${widget.user.followersCount} ',
-                          style: AppTextStyles.h3BasicBlack,
-                        ),
-                        const TextSpan(
-                          text: 'フォロワー',
-                          style: AppTextStyles.h3BasicSecondary,
-                        ),
-                      ],
+                  const SizedBox(width: 4),
+                  InkWell(
+                    onTap: widget.user.followersCount > 0
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const FollowerFollowingListPage(
+                                  listType: 'followers',
+                                ),
+                              ),
+                            );
+                          }
+                        : null,
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${widget.user.followersCount} ',
+                            style: AppTextStyles.h3BasicBlack,
+                          ),
+                          const TextSpan(
+                            text: 'フォロワー',
+                            style: AppTextStyles.h3BasicSecondary,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  )
                 ],
               )
             ],
