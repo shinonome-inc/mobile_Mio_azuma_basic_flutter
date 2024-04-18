@@ -242,4 +242,9 @@ class QiitaRepository {
       throw Exception('Failed to load followers: $e');
     }
   }
+
+  static Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken'); // アクセストークンを削除
+  }
 }
