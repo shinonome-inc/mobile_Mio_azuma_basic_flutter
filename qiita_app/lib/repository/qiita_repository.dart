@@ -205,11 +205,6 @@ class QiitaRepository {
     }
   }
 
-  static Future<void> logout() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('accessToken'); // アクセストークンを削除
-  }
-
   static Future<List<User>> fetchFollowingUsers(String userId) async {
     final accessToken = await _getAccessToken(); // アクセストークンを取得
     final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followees');
@@ -246,5 +241,10 @@ class QiitaRepository {
     } catch (e) {
       throw Exception('Failed to load followers: $e');
     }
+  }
+
+  static Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken'); // アクセストークンを削除
   }
 }
