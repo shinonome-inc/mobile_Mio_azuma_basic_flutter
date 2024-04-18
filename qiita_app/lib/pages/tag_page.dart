@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qiita_app/models/tags.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
-import 'package:qiita_app/widgets/network_error.dart'; // ネットワークエラーウィジェットをインポート
+import 'package:qiita_app/widgets/network_error.dart';
 import 'package:qiita_app/widgets/tag_container.dart';
 
 class TagPage extends StatefulWidget {
@@ -14,6 +14,7 @@ class TagPage extends StatefulWidget {
 
 class _TagPageState extends State<TagPage> {
   late Future<List<Tag>> _tagsFuture;
+  bool networkError = false;
 
   @override
   void initState() {
@@ -26,6 +27,9 @@ class _TagPageState extends State<TagPage> {
       return await QiitaRepository.fetchQiitaTags();
     } catch (e) {
       // ネットワークエラーが発生した場合は、空のリストを返す
+      setState(() {
+        networkError = true;
+      });
       return [];
     }
   }
@@ -45,15 +49,18 @@ class _TagPageState extends State<TagPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError ||
+          if (networkError ||
+              snapshot.hasError ||
               snapshot.data == null ||
               snapshot.data!.isEmpty) {
-            // エラーが発生した場合やデータが空の場合はネットワークエラーウィジェットを表示
-            return NetworkError(onPressReload: () {
-              setState(() {
-                _tagsFuture = fetchTags();
-              });
-            });
+            return NetworkError(
+              onPressReload: () {
+                setState(() {
+                  networkError = false;
+                  _tagsFuture = fetchTags();
+                });
+              },
+            );
           }
           return Padding(
             padding: const EdgeInsets.all(16.0),

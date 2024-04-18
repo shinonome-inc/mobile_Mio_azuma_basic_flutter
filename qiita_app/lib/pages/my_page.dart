@@ -20,6 +20,7 @@ class _MyPageState extends State<MyPage> {
   User? loggedInUser;
   bool isLoading = true;
   bool hasError = false;
+  bool hasNetworkError = false;
 
   @override
   void initState() {
@@ -64,7 +65,7 @@ class _MyPageState extends State<MyPage> {
         appBar: AppTitle(title: 'MyPage', showBottomDivider: true),
         body: Center(child: CircularProgressIndicator()),
       );
-    } else if (hasError) {
+    } else if (hasNetworkError) {
       return Scaffold(
         appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
         body: NetworkError(

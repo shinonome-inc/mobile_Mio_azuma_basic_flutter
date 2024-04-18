@@ -9,6 +9,7 @@ class ArticlesPaginator {
   final Function fetchArticlesCallback;
   final VoidCallback onDataUpdated;
   bool hasError = false;
+  bool hasNetworkError = false;
   late VoidCallback retry;
 
   ArticlesPaginator({

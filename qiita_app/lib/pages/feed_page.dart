@@ -75,7 +75,7 @@ class _FeedPageState extends State<FeedPage> {
             );
           }
           if (articlesPaginator.articles.isEmpty &&
-              articlesPaginator.hasError) {
+              articlesPaginator.hasNetworkError) {
             return NetworkError(
               onPressReload: () {
                 setState(() {
