@@ -19,7 +19,6 @@ class _MyPageState extends State<MyPage> {
   List<Article> articles = [];
   User? loggedInUser;
   bool isLoading = true;
-  bool hasError = false;
   bool hasNetworkError = false;
 
   @override
@@ -43,7 +42,7 @@ class _MyPageState extends State<MyPage> {
           loggedInUser = userInfo;
           articles = userArticles;
           isLoading = false;
-          hasError = false;
+          hasNetworkError = false;
         });
       }
     } catch (e) {
@@ -52,7 +51,7 @@ class _MyPageState extends State<MyPage> {
         setState(() {
           loggedInUser = null;
           isLoading = false;
-          hasError = true;
+          hasNetworkError = true;
         });
       }
     }
@@ -65,20 +64,20 @@ class _MyPageState extends State<MyPage> {
         appBar: AppTitle(title: 'MyPage', showBottomDivider: true),
         body: Center(child: CircularProgressIndicator()),
       );
-    } else if (hasNetworkError) {
+    }
+    if (hasNetworkError) {
       return Scaffold(
         appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
         body: NetworkError(
           onPressReload: () {
             setState(() {
-              hasError = false;
+              hasNetworkError = false;
             });
             fetchLoggedInUserInfo();
           },
         ),
       );
     }
-
     return Scaffold(
       appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
       body: Column(

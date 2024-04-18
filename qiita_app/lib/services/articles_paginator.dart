@@ -8,7 +8,6 @@ class ArticlesPaginator {
   int currentPage = 1;
   final Function fetchArticlesCallback;
   final VoidCallback onDataUpdated;
-  bool hasError = false;
   bool hasNetworkError = false;
   late VoidCallback retry;
 
@@ -45,9 +44,9 @@ class ArticlesPaginator {
         articles.clear();
       }
       articles.addAll(fetchedArticles);
-      hasError = false;
+      hasNetworkError = false;
     } catch (e) {
-      hasError = true;
+      hasNetworkError = true;
     } finally {
       isLoading = false;
       onDataUpdated();
