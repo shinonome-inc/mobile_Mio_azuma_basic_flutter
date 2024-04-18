@@ -54,7 +54,8 @@ class _FeedPageState extends State<FeedPage> {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (articlesPaginator.articles.isEmpty &&
+          }
+          if (articlesPaginator.articles.isEmpty &&
               _searchController.text.isNotEmpty) {
             return const Center(
               child: Column(
@@ -72,7 +73,8 @@ class _FeedPageState extends State<FeedPage> {
                 ],
               ),
             );
-          } else if (articlesPaginator.articles.isEmpty &&
+          }
+          if (articlesPaginator.articles.isEmpty &&
               articlesPaginator.hasError) {
             return NetworkError(
               onPressReload: () {
@@ -81,18 +83,17 @@ class _FeedPageState extends State<FeedPage> {
                 });
               },
             );
-          } else {
-            return ListView.builder(
-              controller: articlesPaginator.scrollController,
-              itemCount: articlesPaginator.articles.length,
-              itemBuilder: (context, index) {
-                return ArticleContainer(
-                  article: articlesPaginator.articles[index],
-                  showAvatar: true,
-                );
-              },
-            );
           }
+          return ListView.builder(
+            controller: articlesPaginator.scrollController,
+            itemCount: articlesPaginator.articles.length,
+            itemBuilder: (context, index) {
+              return ArticleContainer(
+                article: articlesPaginator.articles[index],
+                showAvatar: true,
+              );
+            },
+          );
         },
       ),
     );
