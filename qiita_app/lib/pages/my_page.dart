@@ -4,6 +4,7 @@ import 'package:qiita_app/models/user.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
 import 'package:qiita_app/widgets/article_container.dart';
+import 'package:qiita_app/widgets/network_error.dart';
 import 'package:qiita_app/widgets/section_divider.dart';
 import 'package:qiita_app/widgets/user_info_container.dart';
 
@@ -17,7 +18,8 @@ class MyPage extends StatefulWidget {
 class _MyPageState extends State<MyPage> {
   List<Article> articles = [];
   User? loggedInUser;
-  bool isLoading = true; // ローディング状態の管理
+  bool isLoading = true;
+  bool hasNetworkError = false;
 
   @override
   void initState() {
@@ -27,7 +29,7 @@ class _MyPageState extends State<MyPage> {
 
   Future<void> fetchLoggedInUserInfo() async {
     setState(() {
-      isLoading = true; // ローディング開始
+      isLoading = true;
     });
 
     try {
@@ -39,7 +41,8 @@ class _MyPageState extends State<MyPage> {
         setState(() {
           loggedInUser = userInfo;
           articles = userArticles;
-          isLoading = false; // ローディング終了
+          isLoading = false;
+          hasNetworkError = false;
         });
       }
     } catch (e) {
@@ -47,9 +50,9 @@ class _MyPageState extends State<MyPage> {
       if (mounted) {
         setState(() {
           loggedInUser = null;
-          isLoading = false; // エラー時もローディング終了
+          isLoading = false;
+          hasNetworkError = true;
         });
-        throw Exception('Failed to load Qiita items: $e');
       }
     }
   }
@@ -62,7 +65,19 @@ class _MyPageState extends State<MyPage> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
+    if (hasNetworkError) {
+      return Scaffold(
+        appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
+        body: NetworkError(
+          onPressReload: () {
+            setState(() {
+              hasNetworkError = false;
+            });
+            fetchLoggedInUserInfo();
+          },
+        ),
+      );
+    }
     return Scaffold(
       appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
       body: Column(
