@@ -44,7 +44,8 @@ class _TagPageState extends State<TagPage> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError ||
+          }
+          if (snapshot.hasError ||
               snapshot.data == null ||
               snapshot.data!.isEmpty) {
             // エラーが発生した場合やデータが空の場合はネットワークエラーウィジェットを表示
@@ -53,22 +54,21 @@ class _TagPageState extends State<TagPage> {
                 _tagsFuture = fetchTags();
               });
             });
-          } else {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return TagContainer(tag: snapshot.data![index]);
-                },
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                ),
-              ),
-            );
           }
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: GridView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return TagContainer(tag: snapshot.data![index]);
+              },
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+              ),
+            ),
+          );
         },
       ),
     );
