@@ -58,9 +58,9 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const FollowerFollowingListPage(
+                                builder: (context) => FollowerFollowingListPage(
                                   listType: 'following',
+                                  userId: widget.user.id, // ユーザーIDを渡す
                                 ),
                               ),
                             );
@@ -88,9 +88,9 @@ class _UserInfoContainerState extends State<UserInfoContainer> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    const FollowerFollowingListPage(
+                                builder: (context) => FollowerFollowingListPage(
                                   listType: 'followers',
+                                  userId: widget.user.id, // ユーザーIDを渡す
                                 ),
                               ),
                             );

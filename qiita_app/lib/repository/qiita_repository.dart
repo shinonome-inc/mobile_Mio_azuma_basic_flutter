@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -240,6 +241,22 @@ class QiitaRepository {
       }
     } catch (e) {
       throw Exception('Failed to load followers: $e');
+    }
+  }
+
+  static Future<User> fetchUserInfo(String userId) async {
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        return User.fromJson(jsonResponse);
+      } else {
+        throw Exception(_exceptionMessage(response.statusCode));
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch user info: $e');
     }
   }
 }
