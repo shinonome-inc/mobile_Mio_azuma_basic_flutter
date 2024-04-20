@@ -190,8 +190,10 @@ class QiitaRepository {
     return accessToken;
   }
 
-  static Future<List<Article>> fetchUserArticles(String userId) async {
-    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/items');
+  static Future<List<Article>> fetchUserArticles(String userId,
+      {int page = 1}) async {
+    final url =
+        Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/items?page=$page');
     try {
       final response = await http.get(url);
 

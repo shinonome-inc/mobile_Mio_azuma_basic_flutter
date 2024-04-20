@@ -22,11 +22,16 @@ class _UserPageState extends State<UserPage> {
   User? loggedInUser;
   bool isLoading = true;
   bool hasNetworkError = false;
+  bool isFetching = false;
+  int currentPage = 1;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     fetchUserInfo();
+    _scrollController.addListener(_scrollListener);
   }
 
   Future<void> fetchUserInfo() async {
@@ -36,8 +41,9 @@ class _UserPageState extends State<UserPage> {
 
     try {
       User userInfo = await QiitaRepository.fetchUserInfo(widget.userId);
-      List<Article> userArticles =
-          await QiitaRepository.fetchUserArticles(widget.userId);
+      List<Article> userArticles = await QiitaRepository.fetchUserArticles(
+          widget.userId,
+          page: currentPage);
 
       if (mounted) {
         setState(() {
@@ -54,6 +60,41 @@ class _UserPageState extends State<UserPage> {
           loggedInUser = null;
           isLoading = false;
           hasNetworkError = true;
+        });
+      }
+    }
+  }
+
+  void _scrollListener() {
+    if (!isFetching &&
+        _scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+      currentPage++;
+      fetchUserArticles();
+    }
+  }
+
+  Future<void> fetchUserArticles() async {
+    setState(() {
+      isFetching = true;
+    });
+
+    try {
+      List<Article> additionalArticles =
+          await QiitaRepository.fetchUserArticles(widget.userId,
+              page: currentPage);
+
+      if (mounted) {
+        setState(() {
+          articles.addAll(additionalArticles);
+          isFetching = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch additional user articles: $e');
+      if (mounted) {
+        setState(() {
+          isFetching = false;
         });
       }
     }
@@ -95,17 +136,36 @@ class _UserPageState extends State<UserPage> {
           const SectionDivider(text: '投稿記事'),
           Expanded(
             child: ListView.builder(
-              itemCount: articles.length,
+              itemCount: articles.length + 1, // +1 for loading indicator
               itemBuilder: (context, index) {
-                return ArticleContainer(
-                  article: articles[index],
-                  showAvatar: false,
-                );
+                if (index < articles.length) {
+                  return ArticleContainer(
+                    article: articles[index],
+                    showAvatar: false,
+                  );
+                } else {
+                  return _buildLoadMoreIndicator();
+                }
               },
+              controller: _scrollController,
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLoadMoreIndicator() {
+    return Center(
+      child: isFetching
+          ? const CircularProgressIndicator()
+          : ElevatedButton(
+              onPressed: () {
+                currentPage++;
+                fetchUserArticles();
+              },
+              child: const Text('もっと読み込む'),
+            ),
     );
   }
 }
