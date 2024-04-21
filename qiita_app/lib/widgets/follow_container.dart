@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/models/user.dart';
+import 'package:qiita_app/pages/user_page.dart';
 
 class FollowContainer extends StatelessWidget {
   final User user;
@@ -14,6 +15,14 @@ class FollowContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserPage(userId: user.id),
+          ),
+        );
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),

@@ -6,10 +6,12 @@ import 'package:qiita_app/widgets/follow_container.dart';
 
 class FollowerFollowingListPage extends StatefulWidget {
   final String listType;
+  final String userId;
 
   const FollowerFollowingListPage({
     Key? key,
     required this.listType,
+    required this.userId,
   }) : super(key: key);
 
   @override
@@ -66,11 +68,9 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
 
       List<User> fetchedUsers;
       if (widget.listType == 'following') {
-        fetchedUsers =
-            await QiitaRepository.fetchFollowingUsers(authenticatedUser.id);
+        fetchedUsers = await QiitaRepository.fetchFollowingUsers(widget.userId);
       } else {
-        fetchedUsers =
-            await QiitaRepository.fetchFollowersUsers(authenticatedUser.id);
+        fetchedUsers = await QiitaRepository.fetchFollowersUsers(widget.userId);
       }
       debugPrint('${fetchedUsers.length} users loaded successfully');
 
