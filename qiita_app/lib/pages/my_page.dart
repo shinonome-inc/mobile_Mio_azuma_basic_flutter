@@ -84,22 +84,27 @@ class _MyPageState extends State<MyPage> {
     }
     return Scaffold(
       appBar: const AppTitle(title: 'MyPage', showBottomDivider: true),
-      body: Column(
-        children: [
-          if (loggedInUser != null) UserInfoContainer(user: loggedInUser!),
-          const SectionDivider(text: '投稿記事'),
-          Expanded(
-            child: ListView.builder(
-              itemCount: articles.length,
-              itemBuilder: (context, index) {
-                return ArticleContainer(
-                  article: articles[index],
-                  showAvatar: false,
-                );
-              },
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await fetchLoggedInUserInfo();
+        },
+        child: Column(
+          children: [
+            if (loggedInUser != null) UserInfoContainer(user: loggedInUser!),
+            const SectionDivider(text: '投稿記事'),
+            Expanded(
+              child: ListView.builder(
+                itemCount: articles.length,
+                itemBuilder: (context, index) {
+                  return ArticleContainer(
+                    article: articles[index],
+                    showAvatar: false,
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

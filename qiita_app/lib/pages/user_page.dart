@@ -130,27 +130,34 @@ class _UserPageState extends State<UserPage> {
         showBottomDivider: true,
         showReturnIcon: true,
       ),
-      body: Column(
-        children: [
-          if (loggedInUser != null) UserInfoContainer(user: loggedInUser!),
-          const SectionDivider(text: '投稿記事'),
-          Expanded(
-            child: ListView.builder(
-              itemCount: articles.length + 1, // +1 for loading indicator
-              itemBuilder: (context, index) {
-                if (index < articles.length) {
-                  return ArticleContainer(
-                    article: articles[index],
-                    showAvatar: false,
-                  );
-                } else {
-                  return _buildLoadMoreIndicator();
-                }
-              },
-              controller: _scrollController,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await fetchUserInfo();
+        },
+        child: Column(
+          children: [
+            if (loggedInUser != null) UserInfoContainer(user: loggedInUser!),
+            const SectionDivider(text: '投稿記事'),
+            Expanded(
+              child: ListView.builder(
+                physics:
+                    const AlwaysScrollableScrollPhysics(), //スクロールビューが常にスクロール可能
+                itemCount: articles.length + 1, // +1 for loading indicator
+                itemBuilder: (context, index) {
+                  if (index < articles.length) {
+                    return ArticleContainer(
+                      article: articles[index],
+                      showAvatar: false,
+                    );
+                  } else {
+                    return _buildLoadMoreIndicator();
+                  }
+                },
+                controller: _scrollController,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
