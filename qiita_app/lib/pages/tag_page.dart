@@ -45,7 +45,9 @@ class _TagPageState extends State<TagPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          fetchTags();
+          setState(() {
+            _tagsFuture = fetchTags();
+          });
         },
         child: FutureBuilder<List<Tag>>(
           future: _tagsFuture,
