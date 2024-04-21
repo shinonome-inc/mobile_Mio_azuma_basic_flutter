@@ -3,6 +3,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qiita_app/constants/app_colors.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
 import 'package:qiita_app/constants/texts.dart';
+import 'package:qiita_app/pages/top_page.dart';
+import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_bottom_modal_sheet.dart';
 import 'package:qiita_app/widgets/app_title.dart';
 import 'package:qiita_app/widgets/setting_section_title.dart';
@@ -108,8 +110,25 @@ class _SettingsPageState extends State<SettingsPage> {
           const SectionTitle(title: 'その他'),
           SettingItem(
             title: 'ログアウトする',
-            onTap: () {
-              // ログアウト処理をあとで追加
+            onTap: () async {
+              try {
+                await QiitaRepository.logout(); // ログアウト処理を呼び出し
+                if (mounted) {
+                  // 非同期処理後、ウィジェットがまだツリーに存在するかを確認
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const TopPage(title: 'Qiita Feed App')),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  // 非同期処理後、ウィジェットがまだツリーに存在するかを確認
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('ログアウトに失敗しました: $e')));
+                }
+              }
             },
             showArrow: false,
           ),
