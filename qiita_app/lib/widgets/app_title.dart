@@ -10,6 +10,7 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
   final double dividerHeight;
   final bool showBottomDivider;
   final bool showSearchBar;
+  final bool showReturnIcon;
   final TextEditingController? searchController;
   final Function(String)? onSearch;
 
@@ -21,6 +22,7 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
     this.dividerHeight = 1.0,
     this.showBottomDivider = true,
     this.showSearchBar = false,
+    this.showReturnIcon = false,
     this.onSearch,
     this.searchController,
   }) : super(key: key);
@@ -29,7 +31,6 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final Color dividerColor = Theme.of(context).dividerColor;
     return SafeArea(
-      // SafeArea を追加
       child: Container(
         height: 114,
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -41,21 +42,41 @@ class AppTitle extends StatelessWidget implements PreferredSizeWidget {
                 )
               : null,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 11),
-            Text(
-              title,
-              style: style ?? AppTextStyles.apptitle,
-            ),
-            const SizedBox(height: 10),
-            if (showSearchBar && searchController != null && onSearch != null)
-              SearchBarWithIcon(
-                searchController: searchController!,
-                onSearch: onSearch!,
+        child: Row(
+          children: <Widget>[
+            if (showReturnIcon)
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                  );
+                },
+                icon: const Icon(Icons.arrow_back_ios),
+                iconSize: 20.0,
+                // padding: const EdgeInsets.only(left: 4),
               ),
-            if (showBottomDivider) SizedBox(height: dividerHeight),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 10),
+                  Text(
+                    title,
+                    style: style ?? AppTextStyles.apptitle,
+                  ),
+                  const SizedBox(height: 10),
+                  if (showSearchBar &&
+                      searchController != null &&
+                      onSearch != null)
+                    SearchBarWithIcon(
+                      searchController: searchController!,
+                      onSearch: onSearch!,
+                    ),
+                  if (showBottomDivider) SizedBox(height: dividerHeight),
+                ],
+              ),
+            ),
+            if (showReturnIcon) const SizedBox(width: 48),
           ],
         ),
       ),

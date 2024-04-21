@@ -1,9 +1,11 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/models/tags.dart';
+import 'package:qiita_app/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/urls.dart';
 
@@ -97,5 +99,152 @@ class QiitaRepository {
           'Failed to fetch Qiita tags. Status code: ${response.statusCode}');
       return [];
     }
+  }
+
+  static Future<List<Article>> fetchArticlesByTag(
+      String tagId, int page) async {
+    final url = Uri.parse(
+        '${Urls.qiitaBaseUrl}/tags/$tagId/items?page=$page&per_page=20');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = jsonDecode(response.body);
+        return jsonResponse.map((data) => Article.fromJson(data)).toList();
+      } else {
+        throw Exception(_exceptionMessage(response.statusCode));
+      }
+    } catch (e) {
+      throw Exception('Failed to load articles for tag  $e');
+    }
+  }
+
+  static Future<void> requestAccessToken(String code) async {
+    final String clientId = dotenv.env['CLIENT_ID']!;
+    final String clientSecret = dotenv.env['CLIENT_SECRET']!;
+    const String accessTokenUrl = '${Urls.qiitaBaseUrl}/access_tokens';
+
+    final response = await http.post(
+      Uri.parse(accessTokenUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'code': code,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      // リクエストが成功した場合、レスポンスからアクセストークンを取得
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      final String accessToken = jsonResponse['token'].toString();
+
+      // SharedPreferencesを使用してアクセストークンを保存
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('accessToken', accessToken);
+      if (kDebugMode) {
+        print(accessToken);
+      }
+    } else {
+      // リクエストが失敗した場合のエラーハンドリング
+      final errorMessage =
+          'Failed to request access token: ${response.statusCode}';
+      throw Exception(errorMessage);
+    }
+  }
+
+  static Future<User> fetchAuthenticatedUserInfo() async {
+    final accessToken = await _getAccessToken(); // アクセストークンを取得するメソッド
+    debugPrint('Fetched access token: $accessToken'); // ログ出力でトークン確認
+
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/authenticated_user');
+    debugPrint('Requesting authenticated user info from: $url'); // リクエストURLのログ
+
+    final response =
+        await http.get(url, headers: {'Authorization': 'Bearer $accessToken'});
+    debugPrint('Received response: ${response.body}'); // レスポンス内容のログ
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      return User.fromJson(jsonResponse);
+    } else {
+      debugPrint('Error fetching user info: ${response.statusCode}');
+      throw Exception(_exceptionMessage(response.statusCode));
+    }
+  }
+
+  static Future<String> _getAccessToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? accessToken = prefs.getString('accessToken');
+
+    // アクセストークンの存在をログで確認
+    debugPrint('Access token from SharedPreferences: $accessToken');
+
+    if (accessToken == null || accessToken.isEmpty) {
+      debugPrint('Access token is null or empty');
+      throw Exception('No access token found');
+    }
+    return accessToken;
+  }
+
+  static Future<List<Article>> fetchUserArticles(String userId) async {
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/items');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = jsonDecode(response.body);
+        return jsonResponse.map((data) => Article.fromJson(data)).toList();
+      } else {
+        throw Exception(_exceptionMessage(response.statusCode));
+      }
+    } catch (e) {
+      throw Exception('Failed to load user articles: $e');
+    }
+  }
+
+  static Future<List<User>> fetchFollowingUsers(String userId) async {
+    final accessToken = await _getAccessToken(); // アクセストークンを取得
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followees');
+    try {
+      final response = await http.get(url, headers: {
+        'Authorization': 'Bearer $accessToken', // 認証ヘッダーにアクセストークンを設定
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = jsonDecode(response.body);
+        return jsonResponse.map((data) => User.fromJson(data)).toList();
+      } else {
+        throw Exception(_exceptionMessage(response.statusCode));
+      }
+    } catch (e) {
+      throw Exception('Failed to load following users: $e');
+    }
+  }
+
+  static Future<List<User>> fetchFollowersUsers(String userId) async {
+    final accessToken = await _getAccessToken();
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followers');
+    try {
+      final response = await http.get(url, headers: {
+        'Authorization': 'Bearer $accessToken',
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = jsonDecode(response.body);
+        return jsonResponse.map((data) => User.fromJson(data)).toList();
+      } else {
+        throw Exception(_exceptionMessage(response.statusCode));
+      }
+    } catch (e) {
+      throw Exception('Failed to load followers: $e');
+    }
+  }
+
+  static Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken'); // アクセストークンを削除
   }
 }

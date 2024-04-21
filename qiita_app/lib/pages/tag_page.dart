@@ -2,31 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:qiita_app/models/tags.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/widgets/app_title.dart';
+import 'package:qiita_app/widgets/network_error.dart';
 import 'package:qiita_app/widgets/tag_container.dart';
 
 class TagPage extends StatefulWidget {
-  const TagPage({super.key});
+  const TagPage({Key? key}) : super(key: key);
 
   @override
   State<TagPage> createState() => _TagPageState();
 }
 
 class _TagPageState extends State<TagPage> {
+  late Future<List<Tag>> _tagsFuture;
+  bool networkError = false;
+
   @override
   void initState() {
     super.initState();
-    fetchTags();
+    _tagsFuture = fetchTags();
   }
 
-  List<Tag> tags = [];
-
-  void fetchTags() async {
-    List<Tag> fetchedTags = await QiitaRepository.fetchQiitaTags();
-    setState(
-      () {
-        tags = fetchedTags;
-      },
-    );
+  Future<List<Tag>> fetchTags() async {
+    try {
+      return await QiitaRepository.fetchQiitaTags();
+    } catch (e) {
+      // ネットワークエラーが発生した場合は、空のリストを返す
+      setState(() {
+        networkError = true;
+      });
+      return [];
+    }
   }
 
   @override
@@ -38,19 +43,40 @@ class _TagPageState extends State<TagPage> {
         showSearchBar: false,
         showBottomDivider: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0), // 左右の余白
-        child: GridView.builder(
-          itemCount: tags.length,
-          itemBuilder: (context, index) {
-            return TagContainer(tag: tags[index]);
-          },
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-          ),
-        ),
+      body: FutureBuilder<List<Tag>>(
+        future: _tagsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (networkError ||
+              snapshot.hasError ||
+              snapshot.data == null ||
+              snapshot.data!.isEmpty) {
+            return NetworkError(
+              onPressReload: () {
+                setState(() {
+                  networkError = false;
+                  _tagsFuture = fetchTags();
+                });
+              },
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: GridView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return TagContainer(tag: snapshot.data![index]);
+              },
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

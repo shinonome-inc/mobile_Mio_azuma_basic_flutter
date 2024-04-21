@@ -6,6 +6,7 @@ class Article {
   final String userName;
   final String postedDate;
   final int likesCount;
+  final String url;
 
   Article({
     required this.title,
@@ -13,6 +14,7 @@ class Article {
     required this.userName,
     required this.postedDate,
     required this.likesCount,
+    required this.url,
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Article {
       userName: json['user']['id'] as String,
       postedDate: formattedDate,
       likesCount: json['likes_count'] ?? 0,
+      url: json['url'] as String,
     );
   }
 }
