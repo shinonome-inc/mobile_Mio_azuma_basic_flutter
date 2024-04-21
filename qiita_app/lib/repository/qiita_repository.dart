@@ -246,6 +246,11 @@ class QiitaRepository {
     }
   }
 
+  static Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken'); // アクセストークンを削除
+  }
+
   static Future<User> fetchUserInfo(String userId) async {
     final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId');
     try {
