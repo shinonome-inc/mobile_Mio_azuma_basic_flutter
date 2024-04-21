@@ -43,7 +43,6 @@ class _FeedPageState extends State<FeedPage> {
   void _updateSearchQuery(String query) {
     setState(() {
       _searchController.text = query;
-      articlesPaginator.updateSearchState(query.isNotEmpty);
     });
   }
 
@@ -70,8 +69,7 @@ class _FeedPageState extends State<FeedPage> {
             );
           }
           if (articlesPaginator.articles.isEmpty &&
-              _searchController.text.isNotEmpty &&
-              !articlesPaginator.isLoading) {
+              _searchController.text.isNotEmpty) {
             return const Center(
               child: Column(
                 children: [

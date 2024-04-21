@@ -9,7 +9,6 @@ class ArticlesPaginator {
   final Function fetchArticlesCallback;
   final VoidCallback onDataUpdated;
   bool hasNetworkError = false;
-  bool isSearching = false; // 検索中かどうかを示すフラグ
   late VoidCallback retry;
 
   ArticlesPaginator({
@@ -29,9 +28,7 @@ class ArticlesPaginator {
   void _scrollListener() {
     if (scrollController.position.pixels ==
             scrollController.position.maxScrollExtent &&
-        !isLoading &&
-        !isSearching) {
-      // 検索中ではない場合にのみ実行する
+        !isLoading) {
       currentPage++;
       fetchArticles();
     }
@@ -46,17 +43,7 @@ class ArticlesPaginator {
       if (currentPage == 1 || isPagination) {
         articles.clear();
       }
-
-      // 検索中でない場合のみ記事を追加する
-      if (!isSearching) {
-        // 重複チェック
-        for (var article in fetchedArticles) {
-          if (!articles.contains(article)) {
-            articles.add(article);
-          }
-        }
-      }
-
+      articles.addAll(fetchedArticles);
       hasNetworkError = false;
     } catch (e) {
       hasNetworkError = true;
@@ -64,10 +51,5 @@ class ArticlesPaginator {
       isLoading = false;
       onDataUpdated();
     }
-  }
-
-  // 検索状態を更新するメソッド
-  void updateSearchState(bool searching) {
-    isSearching = searching;
   }
 }
