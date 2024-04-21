@@ -157,15 +157,7 @@ class _UserPageState extends State<UserPage> {
 
   Widget _buildLoadMoreIndicator() {
     return Center(
-      child: isFetching
-          ? const CircularProgressIndicator()
-          : ElevatedButton(
-              onPressed: () {
-                currentPage++;
-                fetchUserArticles();
-              },
-              child: const Text('もっと読み込む'),
-            ),
+      child: isFetching ? const CircularProgressIndicator() : const SizedBox(),
     );
   }
 }
