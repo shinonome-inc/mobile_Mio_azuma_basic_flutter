@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qiita_app/constants/app_text_style.dart';
-import 'package:qiita_app/models/article.dart';
 import 'package:qiita_app/repository/qiita_repository.dart';
 import 'package:qiita_app/services/articles_paginator.dart';
 import 'package:qiita_app/widgets/app_title.dart';
@@ -22,10 +21,9 @@ class _FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     articlesPaginator = ArticlesPaginator(
-      fetchArticlesCallback: (page) =>
-          _fetchArticles(page, _searchController.text),
-      onDataUpdated: () => setState(() {}),
-    );
+        fetchArticlesCallback: (page) => QiitaRepository.fetchQiitaItems(
+            query: _searchController.text, page: page),
+        onDataUpdated: () => setState(() {}));
     articlesPaginator.fetchArticles();
   }
 
@@ -34,16 +32,6 @@ class _FeedPageState extends State<FeedPage> {
     _searchController.dispose();
     articlesPaginator.dispose();
     super.dispose();
-  }
-
-  Future<List<Article>> _fetchArticles(int page, String query) async {
-    return await QiitaRepository.fetchQiitaItems(query: query, page: page);
-  }
-
-  void _updateSearchQuery(String query) {
-    setState(() {
-      _searchController.text = query;
-    });
   }
 
   @override
@@ -56,7 +44,6 @@ class _FeedPageState extends State<FeedPage> {
         searchController: _searchController,
         onSearch: (query) {
           articlesPaginator.currentPage = 1;
-          _updateSearchQuery(query);
           articlesPaginator.fetchArticles();
         },
       ),

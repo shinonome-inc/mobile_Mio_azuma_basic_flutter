@@ -40,7 +40,7 @@ class ArticlesPaginator {
 
     try {
       List<Article> fetchedArticles = await fetchArticlesCallback(currentPage);
-      if (currentPage == 1 || isPagination) {
+      if (currentPage == 1) {
         articles.clear();
       }
       articles.addAll(fetchedArticles);
