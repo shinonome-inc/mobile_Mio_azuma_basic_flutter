@@ -43,40 +43,45 @@ class _TagPageState extends State<TagPage> {
         showSearchBar: false,
         showBottomDivider: true,
       ),
-      body: FutureBuilder<List<Tag>>(
-        future: _tagsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (networkError ||
-              snapshot.hasError ||
-              snapshot.data == null ||
-              snapshot.data!.isEmpty) {
-            return NetworkError(
-              onPressReload: () {
-                setState(() {
-                  networkError = false;
-                  _tagsFuture = fetchTags();
-                });
-              },
-            );
-          }
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GridView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return TagContainer(tag: snapshot.data![index]);
-              },
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-              ),
-            ),
-          );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          fetchTags();
         },
+        child: FutureBuilder<List<Tag>>(
+          future: _tagsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (networkError ||
+                snapshot.hasError ||
+                snapshot.data == null ||
+                snapshot.data!.isEmpty) {
+              return NetworkError(
+                onPressReload: () {
+                  setState(() {
+                    networkError = false;
+                    _tagsFuture = fetchTags();
+                  });
+                },
+              );
+            }
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: GridView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return TagContainer(tag: snapshot.data![index]);
+                },
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
