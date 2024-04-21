@@ -55,32 +55,34 @@ class _TagDetailListPageState extends State<TagDetailListPage> {
           await articlesPaginator.fetchArticles();
           debugPrint('Articles refreshed for tag: ${widget.tag.id}.');
         },
-        child: Builder(builder: (context) {
-          if (articlesPaginator.isLoading &&
-              articlesPaginator.articles.isEmpty) {
-            return const Center(
-              child: CupertinoActivityIndicator(),
-            );
-          } else {
-            return Column(
-              children: [
-                const SectionDivider(text: '投稿記事'),
-                Expanded(
-                  child: ListView.builder(
-                    controller: articlesPaginator.scrollController,
-                    itemCount: articlesPaginator.articles.length,
-                    itemBuilder: (context, index) {
-                      return ArticleContainer(
-                        article: articlesPaginator.articles[index],
-                        showAvatar: true,
-                      );
-                    },
+        child: Builder(
+          builder: (context) {
+            if (articlesPaginator.isLoading &&
+                articlesPaginator.articles.isEmpty) {
+              return const Center(
+                child: CupertinoActivityIndicator(),
+              );
+            } else {
+              return Column(
+                children: [
+                  const SectionDivider(text: '投稿記事'),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: articlesPaginator.scrollController,
+                      itemCount: articlesPaginator.articles.length,
+                      itemBuilder: (context, index) {
+                        return ArticleContainer(
+                          article: articlesPaginator.articles[index],
+                          showAvatar: true,
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            );
-          }
-        }),
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }
