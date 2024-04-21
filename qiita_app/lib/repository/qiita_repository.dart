@@ -34,7 +34,7 @@ class QiitaRepository {
     Uri url; // Uriオブジェクトの初期宣言
     if (query.isNotEmpty) {
       // 検索クエリが空でない場合、クエリパラメータを含むURLを構築（エンコードなし）
-      url = Uri.parse('${Urls.qiitaBaseUrl}/items?query=$query');
+      url = Uri.parse('${Urls.qiitaBaseUrl}/items?query=$query&page=$page');
       // // 検索クエリが空でない場合、クエリパラメータを含むURLを構築（エンコードあり）
       // url = Uri.parse(
       //     '${Urls.qiitaBaseUrl}/items?query=${Uri.encodeComponent(query)}');
