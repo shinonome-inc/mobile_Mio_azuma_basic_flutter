@@ -42,9 +42,13 @@ class QiitaRepository {
       // 検索クエリが空の場合、クエリパラメータを含まないURLを構築
       url = Uri.parse('${Urls.qiitaBaseUrl}/items?page=$page');
     }
+    final accessToken = await _getAccessToken();
 
     try {
-      final response = await http.get(url);
+      final response = await http.get(url,
+          headers: accessToken.isNotEmpty
+              ? {'Authorization': 'Bearer $accessToken'}
+              : null);
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonResponse = jsonDecode(response.body);
@@ -88,7 +92,11 @@ class QiitaRepository {
   static Future<List<Tag>> fetchQiitaTags() async {
     final url =
         Uri.parse('${Urls.qiitaBaseUrl}/tags?page=1&per_page=20&sort=count');
-    final response = await http.get(url);
+    final accessToken = await _getAccessToken();
+    final response = await http.get(url,
+        headers: accessToken.isNotEmpty
+            ? {'Authorization': 'Bearer $accessToken'}
+            : null);
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);
@@ -106,8 +114,12 @@ class QiitaRepository {
       String tagId, int page) async {
     final url = Uri.parse(
         '${Urls.qiitaBaseUrl}/tags/$tagId/items?page=$page&per_page=20');
+    final accessToken = await _getAccessToken();
     try {
-      final response = await http.get(url);
+      final response = await http.get(url,
+          headers: accessToken.isNotEmpty
+              ? {'Authorization': 'Bearer $accessToken'}
+              : null);
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonResponse = jsonDecode(response.body);
