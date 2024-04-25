@@ -68,11 +68,9 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
 
       List<User> fetchedUsers;
       if (widget.listType == 'following') {
-        fetchedUsers = await QiitaRepository.fetchFollowingUsers(
-            widget.userId, currentPage);
+        fetchedUsers = await QiitaRepository.fetchFollowingUsers(widget.userId);
       } else {
-        fetchedUsers = await QiitaRepository.fetchFollowersUsers(
-            widget.userId, currentPage);
+        fetchedUsers = await QiitaRepository.fetchFollowersUsers(widget.userId);
       }
       debugPrint('${fetchedUsers.length} users loaded successfully');
 

@@ -172,15 +172,13 @@ class QiitaRepository {
     final accessToken = await _getAccessToken(); // アクセストークンを取得するメソッド
     debugPrint('Fetched access token: $accessToken'); // ログ出力でトークン確認
 
-    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/yametaro');
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/authenticated_user');
     debugPrint('Requesting authenticated user info from: $url'); // リクエストURLのログ
 
-    final response = await http.get(url);
-
-    // final response = await http.get(url,
-    //     headers: accessToken.isNotEmpty
-    //         ? {'Authorization': 'Bearer $accessToken'}
-    //         : null);
+    final response = await http.get(url,
+        headers: accessToken.isNotEmpty
+            ? {'Authorization': 'Bearer $accessToken'}
+            : null);
     debugPrint('Received response: ${response.body}'); // レスポンス内容のログ
 
     if (response.statusCode == 200) {
@@ -228,10 +226,9 @@ class QiitaRepository {
     }
   }
 
-  static Future<List<User>> fetchFollowingUsers(String userId, int page) async {
+  static Future<List<User>> fetchFollowingUsers(String userId) async {
     final accessToken = await _getAccessToken(); // アクセストークンを取得
-    final url =
-        Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followees?page=$page');
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followees');
     try {
       final response = await http.get(url,
           headers: accessToken.isNotEmpty
@@ -249,10 +246,9 @@ class QiitaRepository {
     }
   }
 
-  static Future<List<User>> fetchFollowersUsers(String userId, int page) async {
+  static Future<List<User>> fetchFollowersUsers(String userId) async {
     final accessToken = await _getAccessToken();
-    final url =
-        Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followers?page=$page');
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followers');
     try {
       final response = await http.get(url,
           headers: accessToken.isNotEmpty
