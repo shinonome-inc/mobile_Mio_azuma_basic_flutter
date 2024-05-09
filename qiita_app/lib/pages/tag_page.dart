@@ -13,24 +13,55 @@ class TagPage extends StatefulWidget {
 }
 
 class _TagPageState extends State<TagPage> {
-  late Future<List<Tag>> _tagsFuture;
+  late ScrollController _scrollController;
+  List<Tag> tags = [];
   bool networkError = false;
+  bool isLoading = false;
+  int currentPage = 1;
 
   @override
   void initState() {
     super.initState();
-    _tagsFuture = fetchTags();
+    _scrollController = ScrollController();
+    fetchTags();
+    _scrollController.addListener(_scrollListener);
   }
 
-  Future<List<Tag>> fetchTags() async {
+  Future<void> fetchTags() async {
+    if (isLoading) {
+      return;
+    }
+    setState(() {
+      isLoading = true;
+    });
+
     try {
-      return await QiitaRepository.fetchQiitaTags();
+      final List<Tag> fetchTags = await QiitaRepository.fetchQiitaTags(
+          page: currentPage); // ページ番号を指定してタグを取得
+      setState(() {
+        if (currentPage == 1) {
+          tags = fetchTags;
+        } else {
+          tags.addAll(fetchTags);
+        }
+        isLoading = false;
+      });
     } catch (e) {
-      // ネットワークエラーが発生した場合は、空のリストを返す
       setState(() {
         networkError = true;
+        isLoading = false;
       });
-      return [];
+    }
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !isLoading) {
+      setState(() {
+        currentPage++;
+        fetchTags();
+      });
     }
   }
 
@@ -46,24 +77,22 @@ class _TagPageState extends State<TagPage> {
       body: RefreshIndicator(
         onRefresh: () async {
           setState(() {
-            _tagsFuture = fetchTags();
+            currentPage = 1;
+            tags.clear();
+            fetchTags();
           });
         },
-        child: FutureBuilder<List<Tag>>(
-          future: _tagsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+        child: Builder(
+          builder: (context) {
+            if (isLoading && tags.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
-            if (networkError ||
-                snapshot.hasError ||
-                snapshot.data == null ||
-                snapshot.data!.isEmpty) {
+            if (networkError) {
               return NetworkError(
                 onPressReload: () {
                   setState(() {
                     networkError = false;
-                    _tagsFuture = fetchTags();
+                    fetchTags();
                   });
                 },
               );
@@ -71,9 +100,10 @@ class _TagPageState extends State<TagPage> {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: GridView.builder(
-                itemCount: snapshot.data!.length,
+                controller: _scrollController,
+                itemCount: tags.length,
                 itemBuilder: (context, index) {
-                  return TagContainer(tag: snapshot.data![index]);
+                  return TagContainer(tag: tags[index]);
                 },
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -86,5 +116,11 @@ class _TagPageState extends State<TagPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

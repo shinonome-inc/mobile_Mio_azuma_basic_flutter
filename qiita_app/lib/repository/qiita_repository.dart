@@ -85,9 +85,9 @@ class QiitaRepository {
     return queryParts.join(" ");
   }
 
-  static Future<List<Tag>> fetchQiitaTags() async {
-    final url =
-        Uri.parse('${Urls.qiitaBaseUrl}/tags?page=1&per_page=20&sort=count');
+  static Future<List<Tag>> fetchQiitaTags(
+      {int page = 1, String query = ''}) async {
+    final url = Uri.parse('${Urls.qiitaBaseUrl}/tags?&page=$page&sort=count');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
