@@ -39,7 +39,7 @@ class _FeedPageState extends State<FeedPage> {
     return Scaffold(
       appBar: AppTitle(
         title: 'Feed',
-        showSearchBar: articlesPaginator.articles.isNotEmpty,
+        showSearchBar: !articlesPaginator.hasNetworkError,
         showBottomDivider: true,
         searchController: _searchController,
         onSearch: (query) {
@@ -55,54 +55,67 @@ class _FeedPageState extends State<FeedPage> {
           await articlesPaginator.fetchArticles();
           debugPrint('Articles refreshed.');
         },
-        child: Builder(
-          builder: (context) {
-            if (articlesPaginator.isLoading &&
-                articlesPaginator.articles.isEmpty) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (articlesPaginator.articles.isEmpty &&
-                _searchController.text.isNotEmpty) {
-              return const Center(
-                child: Column(
-                  children: [
-                    SizedBox(height: 228),
-                    Text(
-                      '検索にマッチする記事はありませんでした',
-                      style: AppTextStyles.h2BasicBlack,
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus(); // タップでキーボードを閉じる
+          },
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification is ScrollStartNotification) {
+                FocusScope.of(context).unfocus(); // スクロール開始でキーボードを閉じる
+              }
+              return false;
+            },
+            child: Builder(
+              builder: (context) {
+                if (articlesPaginator.isLoading &&
+                    articlesPaginator.articles.isEmpty) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (articlesPaginator.articles.isEmpty &&
+                    _searchController.text.isNotEmpty) {
+                  return const Center(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 228),
+                        Text(
+                          '検索にマッチする記事はありませんでした',
+                          style: AppTextStyles.h2BasicBlack,
+                        ),
+                        SizedBox(height: 18),
+                        Text(
+                          '検索条件を変えるなどして再度検索をしてください',
+                          style: AppTextStyles.h3BasicSecondary,
+                        )
+                      ],
                     ),
-                    SizedBox(height: 18),
-                    Text(
-                      '検索条件を変えるなどして再度検索をしてください',
-                      style: AppTextStyles.h3BasicSecondary,
-                    )
-                  ],
-                ),
-              );
-            }
-            if (articlesPaginator.articles.isEmpty &&
-                articlesPaginator.hasNetworkError) {
-              return NetworkError(
-                onPressReload: () {
-                  setState(() {
-                    articlesPaginator.retry();
-                  });
-                },
-              );
-            }
-            return ListView.builder(
-              controller: articlesPaginator.scrollController,
-              itemCount: articlesPaginator.articles.length,
-              itemBuilder: (context, index) {
-                return ArticleContainer(
-                  article: articlesPaginator.articles[index],
-                  showAvatar: true,
+                  );
+                }
+                if (articlesPaginator.articles.isEmpty &&
+                    articlesPaginator.hasNetworkError) {
+                  return NetworkError(
+                    onPressReload: () {
+                      setState(() {
+                        articlesPaginator.retry();
+                      });
+                    },
+                  );
+                }
+                return ListView.builder(
+                  controller: articlesPaginator.scrollController,
+                  itemCount: articlesPaginator.articles.length,
+                  itemBuilder: (context, index) {
+                    return ArticleContainer(
+                      article: articlesPaginator.articles[index],
+                      showAvatar: true,
+                    );
+                  },
                 );
               },
-            );
-          },
+            ),
+          ),
         ),
       ),
     );
