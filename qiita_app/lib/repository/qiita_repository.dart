@@ -200,20 +200,6 @@ class QiitaRepository {
     return accessToken ?? ''; // アクセストークンがなければ空文字を返す
   }
 
-  // static Future<String> _getAccessToken() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final String? accessToken = prefs.getString('accessToken');
-
-  //   // アクセストークンの存在をログで確認
-  //   debugPrint('Access token from SharedPreferences: $accessToken');
-
-  //   if (accessToken == null || accessToken.isEmpty) {
-  //     debugPrint('Access token is null or empty');
-  //     throw Exception('No access token found');
-  //   }
-  //   return accessToken;
-  // }
-
   static Future<List<Article>> fetchUserArticles(String userId,
       {int page = 1}) async {
     final accessToken = await _getAccessToken();
