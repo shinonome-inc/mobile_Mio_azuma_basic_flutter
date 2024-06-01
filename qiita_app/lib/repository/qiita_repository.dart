@@ -197,11 +197,7 @@ class QiitaRepository {
     // アクセストークンの存在をログで確認
     debugPrint('Access token from SharedPreferences: $accessToken');
 
-    if (accessToken == null || accessToken.isEmpty) {
-      debugPrint('Access token is null or empty');
-      throw Exception('No access token found');
-    }
-    return accessToken;
+    return accessToken ?? '';
   }
 
   static Future<List<Article>> fetchUserArticles(String userId,
@@ -226,9 +222,11 @@ class QiitaRepository {
     }
   }
 
-  static Future<List<User>> fetchFollowingUsers(String userId) async {
+  static Future<List<User>> fetchFollowingUsers(String userId,
+      {int page = 1}) async {
     final accessToken = await _getAccessToken(); // アクセストークンを取得
-    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followees');
+    final url =
+        Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followees?page=$page');
     try {
       final response = await http.get(url,
           headers: accessToken.isNotEmpty
@@ -246,9 +244,11 @@ class QiitaRepository {
     }
   }
 
-  static Future<List<User>> fetchFollowersUsers(String userId) async {
+  static Future<List<User>> fetchFollowersUsers(String userId,
+      {int page = 1}) async {
     final accessToken = await _getAccessToken();
-    final url = Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followers');
+    final url =
+        Uri.parse('${Urls.qiitaBaseUrl}/users/$userId/followers?page=$page');
     try {
       final response = await http.get(url,
           headers: accessToken.isNotEmpty
