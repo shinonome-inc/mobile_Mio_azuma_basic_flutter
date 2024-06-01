@@ -197,7 +197,7 @@ class QiitaRepository {
     // アクセストークンの存在をログで確認
     debugPrint('Access token from SharedPreferences: $accessToken');
 
-    return accessToken ?? '';
+    return accessToken ?? ''; // アクセストークンがなければ空文字を返す
   }
 
   static Future<List<Article>> fetchUserArticles(String userId,
