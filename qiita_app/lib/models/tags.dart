@@ -1,5 +1,5 @@
 class Tag {
-  final String iconUrl;
+  final String? iconUrl;
   final String id;
   final int itemsCount;
   final int followersCount;
@@ -13,7 +13,7 @@ class Tag {
 
   factory Tag.fromJson(Map<String, dynamic> json) {
     return Tag(
-      iconUrl: json['icon_url'] as String,
+      iconUrl: json['icon_url'],
       id: json['id'] as String,
       itemsCount: json['items_count'] as int,
       followersCount: json['followers_count'] as int,
