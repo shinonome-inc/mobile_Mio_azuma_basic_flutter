@@ -85,6 +85,13 @@ class _TopPageState extends State<TopPage> {
                           NavigationDelegate(
                             onNavigationRequest:
                                 (NavigationRequest request) async {
+                              if (request.url.contains('github.com/login') ||
+                                  request.url
+                                      .contains('api.twitter.com/oauth') ||
+                                  request.url.contains('accounts.google.com')) {
+                                return NavigationDecision.prevent;
+                              }
+
                               if (request.url.contains('code=')) {
                                 Uri uri = Uri.parse(request.url);
                                 String? code = uri.queryParameters['code'];
