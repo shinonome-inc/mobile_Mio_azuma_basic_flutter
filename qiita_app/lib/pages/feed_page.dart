@@ -21,10 +21,9 @@ class _FeedPageState extends State<FeedPage> {
   void initState() {
     super.initState();
     articlesPaginator = ArticlesPaginator(
-      fetchArticlesCallback: (page) => QiitaRepository.fetchQiitaItems(
-          query: _searchController.text, page: page),
-      onDataUpdated: () => setState(() {}),
-    );
+        fetchArticlesCallback: (page) => QiitaRepository.fetchQiitaItems(
+            query: _searchController.text, page: page),
+        onDataUpdated: () => setState(() {}));
     articlesPaginator.fetchArticles();
   }
 
@@ -35,17 +34,12 @@ class _FeedPageState extends State<FeedPage> {
     super.dispose();
   }
 
-  Future<void> _onRefresh() async {
-    articlesPaginator.currentPage = 1;
-    await articlesPaginator.fetchArticles();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppTitle(
         title: 'Feed',
-        showSearchBar: true,
+        showSearchBar: !articlesPaginator.hasNetworkError,
         showBottomDivider: true,
         searchController: _searchController,
         onSearch: (query) {
@@ -54,23 +48,38 @@ class _FeedPageState extends State<FeedPage> {
         },
       ),
       body: RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: Builder(
-          builder: (context) {
-            if (articlesPaginator.isLoading &&
-                articlesPaginator.articles.isEmpty) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (articlesPaginator.articles.isEmpty &&
-                _searchController.text.isNotEmpty) {
-              return ListView(
-                children: const [
-                  SizedBox(height: 228),
-                  Center(
+        onRefresh: () async {
+          debugPrint('Refreshing articles');
+          _searchController.clear();
+          articlesPaginator.currentPage = 1;
+          await articlesPaginator.fetchArticles();
+          debugPrint('Articles refreshed.');
+        },
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus(); // タップでキーボードを閉じる
+          },
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              if (scrollNotification is ScrollStartNotification) {
+                FocusScope.of(context).unfocus(); // スクロール開始でキーボードを閉じる
+              }
+              return false;
+            },
+            child: Builder(
+              builder: (context) {
+                if (articlesPaginator.isLoading &&
+                    articlesPaginator.articles.isEmpty) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (articlesPaginator.articles.isEmpty &&
+                    _searchController.text.isNotEmpty) {
+                  return const Center(
                     child: Column(
                       children: [
+                        SizedBox(height: 228),
                         Text(
                           '検索にマッチする記事はありませんでした',
                           style: AppTextStyles.h2BasicBlack,
@@ -79,34 +88,34 @@ class _FeedPageState extends State<FeedPage> {
                         Text(
                           '検索条件を変えるなどして再度検索をしてください',
                           style: AppTextStyles.h3BasicSecondary,
-                        ),
+                        )
                       ],
                     ),
-                  ),
-                ],
-              );
-            }
-            if (articlesPaginator.articles.isEmpty &&
-                articlesPaginator.hasNetworkError) {
-              return NetworkError(
-                onPressReload: () {
-                  setState(() {
-                    articlesPaginator.retry();
-                  });
-                },
-              );
-            }
-            return ListView.builder(
-              controller: articlesPaginator.scrollController,
-              itemCount: articlesPaginator.articles.length,
-              itemBuilder: (context, index) {
-                return ArticleContainer(
-                  article: articlesPaginator.articles[index],
-                  showAvatar: true,
+                  );
+                }
+                if (articlesPaginator.articles.isEmpty &&
+                    articlesPaginator.hasNetworkError) {
+                  return NetworkError(
+                    onPressReload: () {
+                      setState(() {
+                        articlesPaginator.retry();
+                      });
+                    },
+                  );
+                }
+                return ListView.builder(
+                  controller: articlesPaginator.scrollController,
+                  itemCount: articlesPaginator.articles.length,
+                  itemBuilder: (context, index) {
+                    return ArticleContainer(
+                      article: articlesPaginator.articles[index],
+                      showAvatar: true,
+                    );
+                  },
                 );
               },
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

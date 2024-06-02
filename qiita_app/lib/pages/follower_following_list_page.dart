@@ -98,14 +98,21 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
         title: widget.listType == 'following' ? 'Following' : 'Followers',
         showReturnIcon: true,
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                return FollowContainer(user: users[index]);
-              },
-            ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          users.clear(); // ユーザーリストをクリア
+          currentPage = 1; // ページ番号をリセット
+          fetchUsers(); // ユーザーを再フェッチ
+        },
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  return FollowContainer(user: users[index]);
+                },
+              ),
+      ),
     );
   }
 }
