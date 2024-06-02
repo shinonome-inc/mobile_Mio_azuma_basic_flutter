@@ -34,9 +34,12 @@ class TagContainer extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center, // 中央寄せ
             children: [
-              tag.iconUrl == null
-                  ? const SizedBox.shrink()
-                  : Image.network(tag.iconUrl!),
+              SizedBox(
+                height: 32.0,
+                child: tag.iconUrl == null
+                    ? const Spacer()
+                    : Image.network(tag.iconUrl!),
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                 child: Text(tag.id),
