@@ -55,32 +55,22 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
       debugPrint('Currently loading data, request to fetch users cancelled.');
       return;
     }
-    debugPrint('Starting to fetch users for page $currentPage.');
 
     setState(() {
       isLoading = true;
     });
+
+    List<User> fetchedUsers = [];
 
     try {
       User authenticatedUser =
           await QiitaRepository.fetchAuthenticatedUserInfo();
       debugPrint('Authenticated user info fetched: ${authenticatedUser.id}');
 
-      List<User> fetchedUsers;
       if (widget.listType == 'following') {
         fetchedUsers = await QiitaRepository.fetchFollowingUsers(widget.userId);
       } else {
         fetchedUsers = await QiitaRepository.fetchFollowersUsers(widget.userId);
-      }
-      debugPrint('${fetchedUsers.length} users loaded successfully');
-
-      if (fetchedUsers.isNotEmpty) {
-        setState(() {
-          users.addAll(fetchedUsers);
-          debugPrint('User list updated, total users: ${users.length}');
-        });
-      } else {
-        debugPrint('No users fetched');
       }
     } catch (e) {
       debugPrint('Error fetching users: $e');
@@ -89,7 +79,17 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
         isLoading = false;
       });
     }
+
+    if (fetchedUsers.isNotEmpty) {
+      setState(() {
+        users.addAll(fetchedUsers);
+        debugPrint('User list updated, total users: ${users.length}');
+      });
+    } else if (fetchedUsers.isEmpty && currentPage == 1) {
+      debugPrint('No users fetched on the first page');
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
