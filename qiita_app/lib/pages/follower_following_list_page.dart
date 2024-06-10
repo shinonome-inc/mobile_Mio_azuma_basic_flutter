@@ -68,9 +68,11 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
       debugPrint('Authenticated user info fetched: ${authenticatedUser.id}');
 
       if (widget.listType == 'following') {
-        fetchedUsers = await QiitaRepository.fetchFollowingUsers(widget.userId);
+        fetchedUsers = await QiitaRepository.fetchFollowingUsers(widget.userId,
+            page: currentPage);
       } else {
-        fetchedUsers = await QiitaRepository.fetchFollowersUsers(widget.userId);
+        fetchedUsers = await QiitaRepository.fetchFollowersUsers(widget.userId,
+            page: currentPage);
       }
     } catch (e) {
       debugPrint('Error fetching users: $e');
@@ -90,7 +92,6 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,9 +105,10 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
           currentPage = 1; // ページ番号をリセット
           fetchUsers(); // ユーザーを再フェッチ
         },
-        child: isLoading
+        child: isLoading && users.isEmpty
             ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
+                controller: scrollController,
                 itemCount: users.length,
                 itemBuilder: (context, index) {
                   return FollowContainer(user: users[index]);
