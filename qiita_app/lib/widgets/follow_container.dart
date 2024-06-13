@@ -39,19 +39,25 @@ class FollowContainer extends StatelessWidget {
                   radius: 16,
                 ),
                 const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user.name,
-                      style: AppTextStyles.h3BasicBlack,
-                    ),
-                    Text(
-                      user.id,
-                      style: AppTextStyles.h3BasicSecondary,
-                    ),
-                  ],
-                ),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        user.name,
+                        style: AppTextStyles.h3BasicBlack,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        user.id,
+                        style: AppTextStyles.h3BasicSecondary,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
             const SizedBox(height: 4),

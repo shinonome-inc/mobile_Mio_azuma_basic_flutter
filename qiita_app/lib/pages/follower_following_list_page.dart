@@ -55,32 +55,24 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
       debugPrint('Currently loading data, request to fetch users cancelled.');
       return;
     }
-    debugPrint('Starting to fetch users for page $currentPage.');
 
     setState(() {
       isLoading = true;
     });
+
+    List<User> fetchedUsers = [];
 
     try {
       User authenticatedUser =
           await QiitaRepository.fetchAuthenticatedUserInfo();
       debugPrint('Authenticated user info fetched: ${authenticatedUser.id}');
 
-      List<User> fetchedUsers;
       if (widget.listType == 'following') {
-        fetchedUsers = await QiitaRepository.fetchFollowingUsers(widget.userId);
+        fetchedUsers = await QiitaRepository.fetchFollowingUsers(widget.userId,
+            page: currentPage);
       } else {
-        fetchedUsers = await QiitaRepository.fetchFollowersUsers(widget.userId);
-      }
-      debugPrint('${fetchedUsers.length} users loaded successfully');
-
-      if (fetchedUsers.isNotEmpty) {
-        setState(() {
-          users.addAll(fetchedUsers);
-          debugPrint('User list updated, total users: ${users.length}');
-        });
-      } else {
-        debugPrint('No users fetched');
+        fetchedUsers = await QiitaRepository.fetchFollowersUsers(widget.userId,
+            page: currentPage);
       }
     } catch (e) {
       debugPrint('Error fetching users: $e');
@@ -88,6 +80,15 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
       setState(() {
         isLoading = false;
       });
+    }
+
+    if (fetchedUsers.isNotEmpty) {
+      setState(() {
+        users.addAll(fetchedUsers);
+        debugPrint('User list updated, total users: ${users.length}');
+      });
+    } else if (fetchedUsers.isEmpty && currentPage == 1) {
+      debugPrint('No users fetched on the first page');
     }
   }
 
@@ -104,9 +105,10 @@ class _FollowerFollowingListPageState extends State<FollowerFollowingListPage> {
           currentPage = 1; // ページ番号をリセット
           fetchUsers(); // ユーザーを再フェッチ
         },
-        child: isLoading
+        child: isLoading && users.isEmpty
             ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
+                controller: scrollController,
                 itemCount: users.length,
                 itemBuilder: (context, index) {
                   return FollowContainer(user: users[index]);
